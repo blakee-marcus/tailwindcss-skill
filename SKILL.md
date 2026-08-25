@@ -282,6 +282,15 @@ When ingesting a new Tailwind documentation page into this skill:
 
 Design principle: **Progressively compile the Tailwind docs into agent-operational knowledge, not mirror the Tailwind website.**
 
+### Editing hazards (verify every write)
+
+Two traps have burned real ingestion passes — encode both:
+
+- **`skill_manage` `patch` can serialize newlines as literal backslash-n**, garbling the file while reporting success. After any patch, `skill_view` the file and confirm real line breaks.
+- **Live skill and git repo are separate trees.** Skill tooling edits the deployed copy; `.agents/` is often untracked in the git repo. Reconcile both copies and confirm `git status --short` shows only intended files before committing.
+
+Full discipline: `references/skill-editing-hazards.md`.
+
 ## Single-Page Ingestion Boundary
 
 When the task is "Ingest this Tailwind page":
