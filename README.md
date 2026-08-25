@@ -1,16 +1,10 @@
 # Tailwind CSS Agent Skill
 
-A Hermes Agent skill that makes the agent inspect the installed Tailwind version and build integration before editing, then verify the generated CSS — instead of applying remembered patterns.
-
-- **Tailwind v4 aware** — CSS-first configuration (`@import "tailwindcss"`, `@theme`, `@utility`, `@source`) is the default model; v3 is covered only where migration requires it.
-- **Official-doc grounded** — knowledge is compiled from Tailwind's own documentation page by page, with source URLs recorded per topic.
-- **Detects before editing** — inspects the installed version, build pipeline, and framework before changing anything.
-- **Prevents stale v3 assumptions** — guards against `content: []`, `tailwind.config.js`-required thinking, and the old PostCSS plugin in v4 projects.
-- **Verifies generated output** — requires a clean build and confirmation that the target utility exists in the emitted CSS.
+A Hermes Agent skill that inspects the installed Tailwind version and build integration before editing, then verifies the generated CSS.
 
 ## Why this exists
 
-The skill interrupts failure modes that `SKILL.md` treats as rules:
+The skill interrupts specific failure modes that `SKILL.md` treats as rules:
 
 - **Mixing v3 and v4 configuration.** Adding `content: []` or `@tailwind` directives to a v4 project, or assuming `tailwind.config.js` is required when it isn't.
 - **Replacing a working integration.** Swapping an existing `@tailwindcss/vite` or `@tailwindcss/postcss` setup for the CLI just because the CLI is available.
@@ -73,7 +67,7 @@ git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   ~/.hermes/skills/software-development/tailwind-css
 ```
 
-After cloning, the directory `~/.hermes/skills/software-development/tailwind-css` contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
+After cloning, the directory contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
 
 This skill is written in the Hermes Agent skill format and is designed for Hermes Agent.
 
@@ -82,10 +76,10 @@ This skill is written in the Hermes Agent skill format and is designed for Herme
 Load the skill, then ask for any Tailwind task:
 
 - **New project setup** — Vite, PostCSS, CLI, or an existing framework-native integration.
-- **Existing project** — add utilities, theme tokens, dark mode, custom variants, or `@source` registration
-- **Migration** — v3 → v4, using the `@tailwindcss/upgrade` tool on a fresh branch
-- **Debugging** — missing styles, broken builds, or class-detection issues
-- **Review** — flag dynamic class construction and v3-era constructs in PRs or generated code
+- **Existing project** — add utilities, theme tokens, dark mode, custom variants, or `@source` registration.
+- **Migration** — v3 → v4, using the `@tailwindcss/upgrade` tool on a fresh branch.
+- **Debugging** — missing styles, broken builds, or class-detection issues.
+- **Review** — flag dynamic class construction and v3-era constructs in PRs or generated code.
 
 ## Repository structure
 
