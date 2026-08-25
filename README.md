@@ -26,7 +26,7 @@ The agent follows a fixed workflow defined in `SKILL.md`:
 2. **Classify** — pin version (v3 vs v4), pipeline (Vite / PostCSS / CLI / none), and task type (new / existing / migration / debug).
 3. **Implement** — apply the smallest coherent change using v4 CSS-first directives, preserving the project's existing architecture.
 4. **Protect v4 semantics** — avoid v3-era constructs unless intentionally migrating.
-5. **Verify** — run the build, confirm it exits 0, and grep the emitted CSS for the target utility.
+5. **Verify** — run the build, confirm it exits 0, and verify the target utility is present in the emitted CSS.
 
 ## Example
 
@@ -45,7 +45,7 @@ export default {
 
 ## Coverage
 
-Every area below has been read from its canonical Tailwind page and extracted into `references/`.
+Every area below is sourced from official Tailwind documentation and compiled into `references/`.
 
 | Area | Status | Source |
 |------|--------|--------|
@@ -69,7 +69,7 @@ Status "Ingested" means the canonical page was read in full and its operational 
 The repository root **is** the skill. There is no nested `tailwind-css/` folder inside the repository.
 
 ```bash
-git clone git@github.com:blakee-marcus/tailwind-css-skill.git \
+git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   ~/.hermes/skills/software-development/tailwind-css
 ```
 
@@ -81,7 +81,7 @@ This skill is written in the Hermes Agent skill format and is designed for Herme
 
 Load the skill, then ask for any Tailwind task:
 
-- **New project setup** — Vite, PostCSS, CLI, or a framework (Next, Nuxt, SvelteKit, etc.)
+- **New project setup** — Vite, PostCSS, CLI, or an existing framework-native integration.
 - **Existing project** — add utilities, theme tokens, dark mode, custom variants, or `@source` registration
 - **Migration** — v3 → v4, using the `@tailwindcss/upgrade` tool on a fresh branch
 - **Debugging** — missing styles, broken builds, or class-detection issues
