@@ -1,0 +1,10 @@
+{
+  "name": "tailwindcss-skill",
+  "description": "Version-aware Tailwind CSS implementation, migration, debugging, and verification skill",
+  "version": "0.1.0",
+  "author": {
+    "name": "Blake Marcus"
+  },
+  "repository": "https://github.com/blakee-marcus/tailwindcss-skill",
+  "license": "MIT"
+}

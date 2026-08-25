@@ -1,14 +1,13 @@
 ---
 name: tailwind-css
-description: Build, modify, and debug Tailwind CSS projects by version.
-version: 0.1.0
-author: Blake Marcus, Hermes Agent
+description: Build, modify, review, migrate, and debug Tailwind CSS v3 and v4 projects. Use when working with Tailwind utilities, Vite or PostCSS integration, Tailwind CLI, missing styles, class detection, theme configuration, dark mode, or v3 to v4 migrations.
 license: MIT
-platforms: [linux, macos, windows]
+compatibility: Requires access to the target project and its package manager. Internet access is useful for current Tailwind documentation and package installation.
 metadata:
-  hermes:
-    tags: [tailwind, css, frontend, ui, vite, postcss, cli]
-    related_skills: []
+  author: "Blake Marcus"
+  version: "0.1.0"
+  platforms: "linux, macos, windows"
+  hermes-tags: "tailwind, css, frontend, ui, vite, postcss, cli"
 ---
 
 # Tailwind CSS Skill
@@ -220,7 +219,7 @@ npx @tailwindcss/upgrade
 ```
 Run on a fresh branch; review the diff; test in browser. Requires Node 20+.
 
-Frame all of these through the `terminal` tool with a generous `timeout` for installs.
+Run these commands using the host agent's shell or terminal execution tool. Use a sufficient timeout for dependency installation and builds.
 
 ## Pitfalls
 
@@ -235,15 +234,31 @@ Frame all of these through the `terminal` tool with a generous `timeout` for ins
 
 ## References
 
-- `references/docs-index.md` — navigation + source inventory: URL, topic, relevance, which local reference holds extracted knowledge.
-- `references/v4-core-reference.md` — v4 CSS-first config, directives, dark mode, source registration, safelisting.
-- `references/directives-and-functions.md` — all v4 directives: `@import`, `@theme`, `@layer`, `@utility`, `@custom-variant`, `@variant`, `@source`, `@apply`, `@media`/`@supports`/`@starting-style`/`@slot`.
+- `references/docs-index.md` — navigation + source inventory: URL, topic, relevance, which local reference holds extracted knowledge, and the canonical-ownership map.
+- `references/v4-core-reference.md` — v4 CSS-first config, directives, dark mode, source registration, safelisting. Quick index only: concise syntax that points to the owning reference for depth.
+- `references/directives-and-functions.md` — v4 directives (`@import`, `@theme`, `@layer`, `@utility`, `@custom-variant`, `@variant`, `@source`, `@apply`) and the single-page authority guard.
+- `references/source-detection.md` — canonical owner for `@source` semantics, class scanning, safelisting, and the dynamic-class failure mode.
+- `references/theme-and-configuration.md` — canonical owner for `@theme`, token namespaces, configuration.
+- `references/utilities-and-values.md` — canonical owner for arbitrary values/properties and utility composition.
+- `references/variants-and-states.md` — canonical owner for variant behavior (built-in + custom).
+- `references/colors.md` — colors & opacity.
+- `references/dark-mode.md` — v4 dark mode.
+- `references/responsive-design.md` — responsive & container queries.
+- `references/migration-v3-v4.md` — v3→v4 migration.
+- `references/installation-and-build.md` — installation / build pipelines.
+- `references/compatibility-and-browser-support.md` — browser support matrix.
+
+Each topic has exactly one canonical owner file; others summarize or cross-link. Do not duplicate a full explanation across files.
 
 Additional reference files are created organically as docs justify them (e.g. `installation-and-build.md`, `source-detection.md`, `theme-and-configuration.md`, `utilities-and-values.md`, `variants-and-states.md`, `responsive-design.md`, `compatibility-and-browser-support.md`, `migration-v3-v4.md`, `troubleshooting.md`). The skill does not mandate a fixed taxonomy up front.
 
 ## Documentation Ingestion Contract
 
 When ingesting a new Tailwind documentation page into this skill:
+
+**Authority guard.** A single-page ingestion must not claim the skill — or any reference file — is a complete or exhaustive treatment of a directive, function, or topic. Frame knowledge as progressively maintained: state what was actually ingested, not what the skill now "fully covers." A reference file's header should say it is maintained progressively and is only authoritative for pages that have been ingested.
+
+**Canonical local ownership.** As reference files grow, give each concept exactly one canonical owner file. Other files may summarize or cross-link but must not duplicate the full explanation. `references/docs-index.md` holds the ownership map. A quick-index file (e.g. `v4-core-reference.md`) gives concise syntax that points to the owner for depth — do not expand it into a duplicate of the detailed references. When a page would otherwise duplicate an existing owner, merge into the owner and trim the duplicate to a summary + cross-link.
 
 1. **Read the page completely** — fetch the full content, not a summary.
 2. **Compare against the existing skill** — identify what is already covered.
@@ -262,6 +277,7 @@ When ingesting a new Tailwind documentation page into this skill:
    - No stale v3 assumptions in a v4 context
    - SKILL.md has not grown excessively (target ~200 lines; bulk goes to references)
    - Cross-references between SKILL.md and references resolve
+   - Each concept has exactly one canonical owner; no two reference files carry the full explanation of the same directive/topic (summarize + cross-link duplicates)
 9. **Report exactly what changed and why** — one summary per ingestion.
 
 Design principle: **Progressively compile the Tailwind docs into agent-operational knowledge, not mirror the Tailwind website.**
@@ -278,4 +294,4 @@ When the task is "Ingest this Tailwind page":
   - Do not expand the reference with unrelated facts from those sources.
   - Record why the extra source was consulted.
 - A Tailwind doc page may link to external sites (e.g. Motion, caniuse). Treat those links as doc references, NOT ingestion sources — do not fetch or merge them unless explicitly instructed to ingest that source.
-- The reference file must remain a controlled compilation of Tailwind's docs, not "whatever Hermes found while researching."
+- The reference file must remain a controlled compilation of Tailwind's docs, not "whatever the agent found while researching."
