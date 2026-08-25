@@ -247,6 +247,7 @@ Run these commands using the host agent's shell or terminal execution tool. Use 
 - `references/migration-v3-v4.md` — v3→v4 migration.
 - `references/installation-and-build.md` — installation / build pipelines.
 - `references/compatibility-and-browser-support.md` — browser support matrix.
+- `references/agent-skills-compliance.md` — Agent Skills compliance + distribution process captured from v0.1.0 work. Reference for future skill authors.
 
 Each topic has exactly one canonical owner file; others summarize or cross-link. Do not duplicate a full explanation across files.
 
