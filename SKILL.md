@@ -121,7 +121,7 @@ v4 is CSS-first and diverges from v3 muscle memory. Watch for:
 - Do **not** assume `tailwind.config.js` is required in v4. It is optional; configuration lives in CSS by default.
 - Do **not** blindly add `content: []` — that is v3. v4 auto-detects sources from the project root (respecting `.gitignore`).
 - Use CSS-first configuration (`@theme`, `@utility`, `@source`, `@custom-variant`) where appropriate.
-- Recognize v4 directives: `@import "tailwindcss"`, `@theme`, `@utility`, `@source`, `@variant`, `@custom-variant`, `@apply`, `@screen`.
+- Recognize v4 directives: `@import "tailwindcss"`, `@theme`, `@utility`, `@source`, `@variant`, `@custom-variant`, `@apply`, `@reference`, `@config`, `@plugin`. Functions: `--alpha()`, `--spacing()`.
 - v4 requires modern browsers (Safari 16.4+, Chrome 111+, Firefox 128+). If older support is needed, stay on v3.4.
 - Default ring width changed to `1px` (`ring` ≠ v3's `3px`); renamed scales: `shadow-sm`→`shadow-xs`, `rounded-sm`→`rounded-xs`, `outline-none`→`outline-hidden` (new `outline-none` = truly none), `ring`→`ring-3`.
 - Removed `@tailwind` directives; use `@import "tailwindcss";`.
@@ -236,7 +236,7 @@ Run these commands using the host agent's shell or terminal execution tool. Use 
 
 - `references/docs-index.md` — navigation + source inventory: URL, topic, relevance, which local reference holds extracted knowledge, and the canonical-ownership map.
 - `references/v4-core-reference.md` — v4 CSS-first config, directives, dark mode, source registration, safelisting. Quick index only: concise syntax that points to the owning reference for depth.
-- `references/directives-and-functions.md` — v4 directives (`@import`, `@theme`, `@layer`, `@utility`, `@custom-variant`, `@variant`, `@source`, `@apply`) and the single-page authority guard.
+- `references/directives-and-functions.md` — v4 directives (`@import`, `@theme`, `@layer`, `@utility`, `@custom-variant`, `@variant`, `@source`, `@apply`, `@reference`, `@config`, `@plugin`) and functions (`--alpha()`, `--spacing()`); canonical owner for directive/function syntax.
 - `references/source-detection.md` — canonical owner for `@source` semantics, class scanning, safelisting, and the dynamic-class failure mode.
 - `references/theme-and-configuration.md` — canonical owner for `@theme`, token namespaces, configuration.
 - `references/utilities-and-values.md` — canonical owner for arbitrary values/properties and utility composition.
@@ -247,7 +247,6 @@ Run these commands using the host agent's shell or terminal execution tool. Use 
 - `references/migration-v3-v4.md` — v3→v4 migration.
 - `references/installation-and-build.md` — installation / build pipelines.
 - `references/compatibility-and-browser-support.md` — browser support matrix.
-- `references/agent-skills-compliance.md` — Agent Skills compliance + distribution process captured from v0.1.0 work. Reference for future skill authors.
 
 Each topic has exactly one canonical owner file; others summarize or cross-link. Do not duplicate a full explanation across files.
 

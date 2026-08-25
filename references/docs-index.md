@@ -14,8 +14,8 @@ Navigation + source inventory. Each entry maps a URL to its topic, relevance to 
 
 - **Detecting classes in source files** — https://tailwindcss.com/docs/detecting-classes-in-source-files — how scanning works, `@source`, `@source inline()`, and the dynamic-class failure mode → `references/source-detection.md`
 - **Theme variables** — https://tailwindcss.com/docs/theme — `@theme`, token namespaces, default theme values, extend/override/custom, sharing → `references/theme-and-configuration.md`
+- **Functions & directives** — https://tailwindcss.com/docs/functions-and-directives — `@apply`, `@utility`, `@custom-variant`, `@source`, `@variant`, `@reference`, `--alpha()`, `--spacing()` → `references/directives-and-functions.md`
 - **Colors** — https://tailwindcss.com/docs/colors — default palette (22 families × 11 shades), all color utilities, opacity, dark mode, CSS variable reference, customization → `references/colors.md`
-- **Functions & directives** — https://tailwindcss.com/docs/functions-and-directives — `@apply`, `@utility`, `@custom-variant`, `@source`, `@variant` → `references/directives-and-functions.md`
 - **Styling with utility classes** — https://tailwindcss.com/docs/styling-with-utility-classes — utility philosophy, arbitrary values, inline styles guidance, duplication/conflict strategies → `references/utilities-and-values.md`
 - **Adding custom styles** — https://tailwindcss.com/docs/adding-custom-styles — `@layer base/components`, `@utility` (simple/complex/functional), `@variant`, `@custom-variant`, arbitrary values deep-dive → `references/directives-and-functions.md`, `references/utilities-and-values.md`, `references/variants-and-states.md`
 
@@ -42,7 +42,7 @@ As reference files grow, each concept has one **canonical local owner**. Other f
 | Concept | Canonical owner |
 |---------|-----------------|
 | `@source` semantics, class discovery, safelisting | `references/source-detection.md` |
-| `@utility`, `@custom-variant`, `@variant`, `@layer`, `@apply`, `@theme` option syntax used for customization | `references/directives-and-functions.md` |
+| `@utility`, `@custom-variant`, `@variant`, `@layer`, `@apply`, `@theme` option syntax used for customization, `@reference`, subpath imports, `--alpha()`, `--spacing()`, `@config`, `@plugin`, `theme()` | `references/directives-and-functions.md` |
 | Arbitrary values/properties, utility composition, inline styles | `references/utilities-and-values.md` |
 | Variant behavior (built-in + custom) | `references/variants-and-states.md` |
 | Theme variables, token namespaces, configuration | `references/theme-and-configuration.md` |

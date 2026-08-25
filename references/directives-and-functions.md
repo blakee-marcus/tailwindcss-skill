@@ -326,6 +326,152 @@ Apply utility classes in custom CSS.
 
 ---
 
+## `@reference`
+
+Import theme variables, custom utilities, and custom variants into a Vue/Svelte `<style>` block or CSS module **without duplicating CSS output**.
+
+### Reference a project stylesheet
+
+```vue
+<style>
+  @reference "../../app.css";
+
+  h1 {
+    @apply text-2xl font-bold text-red-500;
+  }
+</style>
+```
+
+### Reference tailwindcss directly (default theme, no customizations)
+
+```vue
+<style>
+  @reference "tailwindcss";
+
+  h1 {
+    @apply text-2xl font-bold text-red-500;
+  }
+</style>
+```
+
+**When to use:** You need `@apply` or `@variant` inside a component's `<style>` block or a CSS module. The `@reference` import makes tokens available without emitting duplicate styles.
+
+---
+
+## Subpath Imports
+
+When using CLI, Vite, or PostCSS, the directives `@import`, `@reference`, `@plugin`, and `@config` support Node.js [subpath imports](https://nodejs.org/api/packages.html#subpath-imports) (like bundler/TS path aliases).
+
+### package.json
+
+```json
+{
+  "imports": {
+    "#app.css": "./src/css/app.css"
+  }
+}
+```
+
+### Vue/Svelte component
+
+```vue
+<style>
+  @reference "#app.css";
+
+  h1 {
+    @apply text-2xl font-bold text-red-500;
+  }
+</style>
+```
+
+**Benefit:** Stable short aliases for cross-project references; requires the matching `package.json` `"imports"` mapping — arbitrary aliases do not resolve without it.
+
+---
+
+## Functions
+
+### `--alpha()`
+
+Adjust the opacity of a color using CSS `color-mix` in oklab.
+
+```css
+.my-element {
+  color: --alpha(var(--color-lime-300) / 50%);
+}
+```
+
+**Compiles to:**
+
+```css
+.my-element {
+  color: color-mix(in oklab, var(--color-lime-300) 50%, transparent);
+}
+```
+
+### `--spacing()`
+
+Generate a spacing value based on your theme's spacing scale.
+
+```css
+.my-element {
+  margin: --spacing(4);
+}
+```
+
+**Compiles to:**
+
+```css
+.my-element {
+  margin: calc(var(--spacing) * 4);
+}
+```
+
+**In arbitrary values (with `calc()`):**
+
+```html
+<div class="py-[calc(--spacing(4)-1px)]">...</div>
+```
+
+---
+
+## Compatibility (v3 Legacy)
+
+The following directives and functions exist solely for compatibility with Tailwind CSS v3.x. They can be used alongside CSS-driven features (`@theme`, `@utility`, etc.) — CSS definitions take precedence where merged.
+
+### `@config`
+
+Load a legacy JavaScript-based configuration file:
+
+```css
+@config "../../tailwind.config.js";
+```
+
+**Unsupported v3 options:** `corePlugins`, `safelist`, `separator`. Use `@source inline()` for safelisting in v4.
+
+### `@plugin`
+
+Load a legacy JavaScript-based plugin:
+
+```css
+@plugin "@tailwindcss/typography";
+```
+
+Accepts a package name or local path.
+
+### `theme()` function (deprecated)
+
+Access theme values using dot notation:
+
+```css
+.my-element {
+  margin: theme(spacing.12);
+}
+```
+
+**Recommendation:** Use CSS theme variables (`var(--spacing)`, `var(--color-*)`) instead. The `theme()` function is deprecated.
+
+---
+
 ## `@media`, `@supports`, `@starting-style`, `@slot`
 
 Available inside `@custom-variant` and `@variant`:

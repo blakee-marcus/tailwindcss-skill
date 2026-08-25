@@ -43,6 +43,32 @@ Tokens are emitted as real CSS variables so JS and inline styles can read them. 
 
 See `references/theme-and-configuration.md` for full namespace table.
 
+## `@reference`
+
+Import theme, utilities, and variants into Vue/Svelte `<style>` blocks or CSS modules without duplicating output:
+
+```vue
+<style>
+  @reference "../../app.css";  /* or @reference "tailwindcss"; for defaults */
+  h1 { @apply text-2xl font-bold text-red-500; }
+</style>
+```
+
+## Subpath Imports
+
+`@import`, `@reference`, `@plugin`, `@config` support Node.js subpath imports (`#alias`):
+
+```json
+{ "imports": { "#app.css": "./src/css/app.css" } }
+```
+
+```vue
+<style>
+  @reference "#app.css";
+  h1 { @apply text-2xl font-bold text-red-500; }
+</style>
+```
+
 ## Custom layers (`@layer`)
 
 ```css
@@ -114,6 +140,32 @@ Quick syntax — full reference in `references/source-detection.md` (owns `@sour
 
 Use when classes live in `node_modules` (gitignored), a monorepo subproject, or are genuinely dynamic (fed from CMS). Prefer static maps over safelisting — see SKILL.md Phase 5.
 
+## Functions
+
+### `--alpha()`
+
+Adjust opacity via `color-mix` in oklab:
+
+```css
+color: --alpha(var(--color-lime-300) / 50%);
+/* → color-mix(in oklab, var(--color-lime-300) 50%, transparent) */
+```
+
+### `--spacing()`
+
+Generate spacing from theme scale:
+
+```css
+margin: --spacing(4);
+/* → calc(var(--spacing) * 4) */
+```
+
+In arbitrary values:
+
+```html
+<div class="py-[calc(--spacing(4)-1px)]">...</div>
+```
+
 ## Dark mode (v4)
 
 No `darkMode` config key in v4. Define the variant:
@@ -131,6 +183,16 @@ Then `dark:bg-slate-900` etc., toggling `.dark` on a parent.
 ```
 
 Only accepts utility classes. Avoid inside Sass/Less pipelines (ordering/parsing issues). Prefer markup utilities; use `@apply` only for component classes where markup is impractical.
+
+## Compatibility (v3 Legacy)
+
+```css
+@config "../../tailwind.config.js";  /* load v3 config; corePlugins/safelist/separator unsupported */
+@plugin "@tailwindcss/typography";   /* load v3 plugin */
+margin: theme(spacing.12);            /* deprecated; use var(--spacing) */
+```
+
+CSS-driven features take precedence where merged.
 
 ## Key v4 vs v3 differences (quick)
 
