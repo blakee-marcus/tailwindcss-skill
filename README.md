@@ -71,13 +71,16 @@ Status "Ingested" means the canonical page was read in full and its operational 
 
 The repository root **is** the skill. There is no nested `tailwind-css/` folder inside the repository. It follows the [Agent Skills](https://agentskills.io/specification) open standard, so the same directory installs into any compatible runtime.
 
-### skills.sh (recommended — one command, all agents)
+### One command — works everywhere (recommended)
 
 ```bash
 npx skills add blakee-marcus/tailwindcss-skill
 ```
 
-This installs the skill to `~/.agents/skills/tailwind-css` and automatically symlinks it into Claude Code, Hermes Agent, Codex, Cursor, Windsurf, GitHub Copilot, Gemini CLI, and 70+ other agents.
+This installs the skill to `~/.agents/skills/tailwind-css` and automatically symlinks it into **Claude Code, Hermes Agent, Codex, Cursor, Windsurf, GitHub Copilot, Gemini CLI, OpenCode, and 70+ other agents** — no further steps.
+
+<details>
+<summary>Per-runtime manual install (only if skills.sh isn't an option)</summary>
 
 ### Hermes Agent
 
@@ -114,20 +117,22 @@ claude --plugin-dir /path/to/tailwindcss-skill
 
 Any runtime that implements the Agent Skills standard can load this directory directly. After cloning, the directory contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
 
-## Verified Runtimes
+</details>
 
-| Agent | Status | Notes |
-|-------|--------|-------|
-| **skills.sh (universal)** | ✅ Verified | `npx skills add blakee-marcus/tailwindcss-skill` — installs to `~/.agents/skills/tailwind-css`, symlinks to all supported agents |
-| **Claude Code** | ✅ Verified | Personal (`~/.claude/skills/tailwind-css`), project (`.claude/skills/tailwind-css`), or plugin (`.claude-plugin/`) |
-| **Hermes Agent** | ✅ Verified | `~/.hermes/skills/software-development/tailwind-css` |
-| **Codex** | ✅ Verified | Installed via skills.sh universal path; first-class skills support in Codex app |
-| **Cursor** | ✅ Verified | Installed via skills.sh universal path |
-| **Windsurf** | ✅ Verified | Installed via skills.sh universal path |
-| **GitHub Copilot** | ✅ Verified | Installed via skills.sh universal path |
-| **Gemini CLI** | ✅ Verified | Installed via skills.sh universal path |
-| **OpenCode** | ✅ Verified | Installed via skills.sh universal path |
-| **Generic Agent Skills** | ✅ Verified | Any Agent Skills–compatible runtime can load the directory directly |
+## Supported Runtimes
+
+|| Agent | Install | Behavior | Notes ||
+|-------|-------|----------|----------|-------|
+| **skills.sh (universal)** | ✅ Verified | ✅ Verified | `npx skills add blakee-marcus/tailwindcss-skill` — installs to `~/.agents/skills/tailwind-css`, symlinks to all supported agents |
+| **Claude Code** | ✅ Verified | ✅ Verified | Personal (`~/.claude/skills/tailwind-css`), project (`.claude/skills/tailwind-css`), or plugin (`.claude-plugin/`) |
+| **Hermes Agent** | ✅ Verified | ✅ Verified | `~/.hermes/skills/software-development/tailwind-css` |
+| **Codex** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path; first-class skills support in Codex app |
+| **Cursor** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
+| **Windsurf** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
+| **GitHub Copilot** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
+| **Gemini CLI** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
+| **OpenCode** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
+| **Generic Agent Skills** | ✅ Verified | ⏳ Pending | Any Agent Skills–compatible runtime can load the directory directly |
 
 ## Usage
 
@@ -138,6 +143,39 @@ Load the skill, then ask for any Tailwind task:
 - **Migration** — v3 → v4, using the `@tailwindcss/upgrade` tool on a fresh branch.
 - **Debugging** — missing styles, broken builds, or class-detection issues.
 - **Review** — flag dynamic class construction and v3-era constructs in PRs or generated code.
+
+## Quick Demo Scenarios
+
+These are the fastest way to see the skill's value. Each is a one-prompt task that would silently fail without the skill's rules.
+
+### 1. v3→v4 Mistake Prevention
+> "Add dark mode to this Tailwind v4 project."
+
+**Without skill:** Agent adds `darkMode: 'class'` to `tailwind.config.js` (v3 pattern) — does nothing in v4, no error.
+**With skill:** Agent detects v4, sees no `tailwind.config.js` is required, and adds the correct v4 CSS-first variant:
+```css
+@custom-variant dark (&:where(.dark, .dark *));
+```
+Then uses `dark:bg-gray-900` in markup.
+
+### 2. Dynamic-Class Detection
+> "Create a Button component that takes a `color` prop and styles itself."
+
+**Without skill:** Generates `className={`bg-${color}-600 hover:bg-${color}-500`}` — Tailwind never sees complete tokens, styles vanish silently.
+**With skill:** Flags the pattern, rewrites to a static map:
+```jsx
+const variants = {
+  blue: "bg-blue-600 hover:bg-blue-500 text-white",
+  red: "bg-red-500 hover:bg-red-400 text-white",
+};
+return <button className={variants[color]} />;
+```
+
+### 3. Preserving Vite/PostCSS Architecture
+> "Set up Tailwind in this Vite project."
+
+**Without skill:** Installs `tailwindcss` + `autoprefixer`, adds PostCSS config with `tailwindcss` plugin — v3 pattern, wrong for v4, breaks the existing Vite integration.
+**With skill:** Detects Vite project, installs `tailwindcss @tailwindcss/vite`, adds plugin to `vite.config.js`, uses `@import "tailwindcss"` in CSS. Architecture preserved.
 
 ## Repository structure
 
