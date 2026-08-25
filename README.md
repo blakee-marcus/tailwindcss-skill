@@ -1,5 +1,13 @@
 # Tailwind CSS Agent Skill
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4">
+  <img src="https://img.shields.io/badge/Hermes-Agent-6f42c1" alt="Hermes Agent">
+  <img src="https://img.shields.io/badge/version-0.1.0-blue" alt="Version 0.1.0">
+  <img src="https://img.shields.io/github/license/blakee-marcus/tailwindcss-skill" alt="MIT License">
+  <img src="https://img.shields.io/badge/source-official_Tailwind_docs-0ea5e9" alt="Official Tailwind docs">
+</p>
+
 A Hermes Agent skill that inspects the installed Tailwind version and build integration before editing, then verifies the generated CSS.
 
 ## Why this exists
