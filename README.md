@@ -1,25 +1,24 @@
 # Tailwind CSS Agent Skill
 
-A version-aware Tailwind CSS skill that makes an AI agent detect the project's real setup, respect v4 semantics, and verify the CSS it generates — instead of guessing from stale training memory.
+A Hermes Agent skill that makes the agent inspect the installed Tailwind version and build integration before editing, then verify the generated CSS — instead of applying remembered patterns.
 
-- **Tailwind v4 aware** — CSS-first configuration (`@import "tailwindcss"`, `@theme`, `@utility`, `@source`) is the default mental model; v3 is covered only where migration requires it.
+- **Tailwind v4 aware** — CSS-first configuration (`@import "tailwindcss"`, `@theme`, `@utility`, `@source`) is the default model; v3 is covered only where migration requires it.
 - **Official-doc grounded** — knowledge is compiled from Tailwind's own documentation page by page, with source URLs recorded per topic.
 - **Detects before editing** — inspects the installed version, build pipeline, and framework before changing anything.
 - **Prevents stale v3 assumptions** — guards against `content: []`, `tailwind.config.js`-required thinking, and the old PostCSS plugin in v4 projects.
 - **Verifies generated output** — requires a clean build and confirmation that the target utility exists in the emitted CSS.
-- **Built for agent use** — a workflow, not a copy of the documentation.
 
 ## Why this exists
 
-An LLM asked about Tailwind tends to reach for patterns it half-remembers. Those patterns fail silently or visibly in real projects. This skill exists to interrupt the common failure modes that `SKILL.md` treats as rules:
+The skill interrupts failure modes that `SKILL.md` treats as rules:
 
 - **Mixing v3 and v4 configuration.** Adding `content: []` or `@tailwind` directives to a v4 project, or assuming `tailwind.config.js` is required when it isn't.
-- **Replacing a working integration unnecessarily.** Swapping an existing `@tailwindcss/vite` or `@tailwindcss/postcss` setup for the CLI just because the CLI is available.
-- **Constructing class names Tailwind cannot discover.** Writing `bg-${color}-600` or `text-${state}-600` produces no styles, because Tailwind scans source as plain text and never sees the complete token.
-- **Introducing arbitrary values when theme tokens already exist.** Reaching for `bg-[#bada55]` when the project already defines `--color-brand` and should extend it instead.
+- **Replacing a working integration.** Swapping an existing `@tailwindcss/vite` or `@tailwindcss/postcss` setup for the CLI just because the CLI is available.
+- **Constructing class names Tailwind cannot discover.** Writing `bg-${color}-600` produces no styles, because Tailwind scans source as plain text and never sees the complete token.
+- **Introducing arbitrary values when theme tokens exist.** Reaching for `bg-[#bada55]` when the project already defines `--color-brand` and should extend it instead.
 - **Claiming success without verifying emitted CSS.** Reporting a change as done without running the build and confirming the utility is present in the output.
 
-## What the skill does
+## How it works
 
 The agent follows a fixed workflow defined in `SKILL.md`:
 
@@ -36,7 +35,7 @@ A repository that already uses Tailwind v4 with a Vite integration.
 **Without the skill**, an agent may apply remembered v3 patterns:
 
 ```js
-// tailwind.config.js — wrong for a v4 project
+// tailwind.config.js — v3 pattern, not used in v4
 export default {
   content: ["./src/**/*.{html,js,jsx}"],
 }
@@ -76,7 +75,7 @@ git clone git@github.com:blakee-marcus/tailwind-css-skill.git \
 
 After cloning, the directory `~/.hermes/skills/software-development/tailwind-css` contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
 
-This skill is written in the Hermes Agent skill format. It is designed to be loaded by Hermes Agent.
+This skill is written in the Hermes Agent skill format and is designed for Hermes Agent.
 
 ## Usage
 
@@ -88,17 +87,17 @@ Load the skill, then ask for any Tailwind task:
 - **Debugging** — missing styles, broken builds, or class-detection issues
 - **Review** — flag dynamic class construction and v3-era constructs in PRs or generated code
 
-## Knowledge architecture
+## Repository structure
 
 - **`SKILL.md`** — operational behavior: when to use the skill, the detect→verify workflow, authority order, and failure-mode rules.
 - **`references/*.md`** — durable technical knowledge: directive syntax, theme namespaces, variant behavior, source detection, migration steps. Each topic has one canonical owner file.
 - **`references/docs-index.md`** — source provenance and the ownership map: which Tailwind URL was ingested, what it covers, and which local file holds it.
 
-`references/v4-core-reference.md` is a quick index — concise syntax that points to the canonical owner for depth, rather than duplicating it.
+`references/v4-core-reference.md` is a quick index — concise syntax that points to the canonical owner for depth.
 
 ## Documentation ingestion model
 
-New Tailwind pages are added through a controlled contract, which is what keeps the knowledge trustworthy:
+New Tailwind pages are added through a controlled contract:
 
 - **Single-page boundary.** One documentation page is ingested at a time. Only claims the page itself supports are extracted; external links are treated as references, not ingestion sources.
 - **Merge, not append.** New information is consolidated into existing sections. The skill does not grow by stacking duplicate prose.
