@@ -23,6 +23,26 @@ This file is progressively maintained. Do not assume a directive or function is 
 | `prefix()` | `@import "tailwindcss" prefix(tw);` | Prefix all utilities (e.g., `tw:flex`) |
 | `important` | `@import "tailwindcss" important;` | Add `!important` to all utilities |
 
+### Options with subpath imports
+
+When importing Tailwind's pieces individually (`theme.css`, `preflight.css`, `utilities.css`), attach each option to the import it affects:
+
+| Option | Goes on | Why |
+|--------|---------|-----|
+| `source(...)` | `utilities.css` | Source detection affects generated utilities |
+| `important` | `utilities.css` | Adds `!important` to generated utilities |
+| `theme(static)` / `theme(inline)` | `theme.css` | Affects generated theme variables |
+| `prefix(...)` | `theme.css` **and** `utilities.css` | Prefixes utility classes and CSS variables |
+
+Example — disable Preflight and use a prefix:
+
+```css
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+```
+
 ---
 
 ## `@theme`

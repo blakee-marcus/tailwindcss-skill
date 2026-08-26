@@ -244,6 +244,7 @@ Run these commands using the host agent's shell or terminal execution tool. Use 
 - `references/colors.md` — colors & opacity.
 - `references/dark-mode.md` — v4 dark mode.
 - `references/responsive-design.md` — responsive & container queries.
+- `references/preflight.md` — Preflight base styles, reset rules, extending/disabling.
 - `references/migration-v3-v4.md` — v3→v4 migration.
 - `references/installation-and-build.md` — installation / build pipelines.
 - `references/compatibility-and-browser-support.md` — browser support matrix.

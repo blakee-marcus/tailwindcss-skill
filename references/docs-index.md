@@ -18,6 +18,7 @@ Navigation + source inventory. Each entry maps a URL to its topic, relevance to 
 - **Colors** — https://tailwindcss.com/docs/colors — default palette (22 families × 11 shades), all color utilities, opacity, dark mode, CSS variable reference, customization → `references/colors.md`
 - **Styling with utility classes** — https://tailwindcss.com/docs/styling-with-utility-classes — utility philosophy, arbitrary values, inline styles guidance, duplication/conflict strategies → `references/utilities-and-values.md`
 - **Adding custom styles** — https://tailwindcss.com/docs/adding-custom-styles — `@layer base/components`, `@utility` (simple/complex/functional), `@variant`, `@custom-variant`, arbitrary values deep-dive → `references/directives-and-functions.md`, `references/utilities-and-values.md`, `references/variants-and-states.md`
+- **Preflight** — https://tailwindcss.com/docs/preflight — base stylesheet, reset rules, extending/disabling → `references/preflight.md`
 
 ## Utilities by area
 
@@ -52,5 +53,6 @@ As reference files grow, each concept has one **canonical local owner**. Other f
 | Installation / build pipelines | `references/installation-and-build.md` |
 | v3→v4 migration | `references/migration-v3-v4.md` |
 | Browser compatibility | `references/compatibility-and-browser-support.md` |
+| Preflight base styles | `references/preflight.md` |
 
 `references/v4-core-reference.md` is a **quick index** — concise syntax snippets that point to the canonical owner for depth. Do not expand it into a duplicate of the detailed references.

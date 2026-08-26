@@ -8,7 +8,7 @@ CSS-first configuration. Assumes v4 (`@import "tailwindcss";`). For v3→v4 diff
 @import "tailwindcss";
 ```
 
-A single import pulls in Preflight, theme, and utilities. No `tailwind.config.js` required.
+A single import pulls in Preflight, theme, and utilities. No `tailwind.config.js` required. For what Preflight resets and how to extend or disable it, see `references/preflight.md`.
 
 ### Import Options
 
