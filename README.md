@@ -9,7 +9,7 @@
   <img src="https://img.shields.io/badge/source-official_Tailwind_docs-0ea5e9" alt="Official Tailwind docs">
 </p>
 
-An open Agent Skill for Tailwind CSS v4 — version-aware implementation, migration, debugging, and verification. Works with **Claude Code, Cursor, Windsurf, Codex, Hermes Agent, GitHub Copilot, Gemini CLI, and any Agent Skills–compatible runtime**.
+An open Agent Skill for Tailwind CSS v4 — version-aware implementation, migration, debugging, and verification. The skill follows the [Agent Skills](https://agentskills.io/specification) standard and is known to install into the runtimes listed below.
 
 ## Why this exists
 
@@ -71,25 +71,25 @@ Status "Ingested" means the canonical page was read in full and its operational 
 
 The repository root **is** the skill. There is no nested `tailwind-css/` folder inside the repository. It follows the [Agent Skills](https://agentskills.io/specification) open standard, so the same directory installs into any compatible runtime.
 
-### One command — works everywhere (recommended)
+### Recommended distribution command
 
 ```bash
 npx skills add blakee-marcus/tailwindcss-skill
 ```
 
-This installs the skill to `~/.agents/skills/tailwind-css` and automatically symlinks it into **Claude Code, Hermes Agent, Codex, Cursor, Windsurf, GitHub Copilot, Gemini CLI, OpenCode, and 70+ other agents** — no further steps.
+This path has been exercised with the skills.sh installer.
 
 <details>
-<summary>Per-runtime manual install (only if skills.sh isn't an option)</summary>
+<summary>Manual install per runtime</summary>
 
-### Hermes Agent
+**Hermes Agent**
 
 ```bash
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   ~/.hermes/skills/software-development/tailwind-css
 ```
 
-### Claude Code — personal
+**Claude Code — personal**
 
 ```bash
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
@@ -98,14 +98,14 @@ git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
 
 The destination directory name `tailwind-css` matches the skill's `name` field.
 
-### Claude Code — project
+**Claude Code — project**
 
 ```bash
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   .claude/skills/tailwind-css
 ```
 
-### Claude Code — plugin
+**Claude Code — plugin**
 
 The repo ships a `.claude-plugin/plugin.json` manifest, so it also loads as a single-skill plugin without restructuring:
 
@@ -113,7 +113,7 @@ The repo ships a `.claude-plugin/plugin.json` manifest, so it also loads as a si
 claude --plugin-dir /path/to/tailwindcss-skill
 ```
 
-### Other Agent Skills clients
+**Other Agent Skills clients**
 
 Any runtime that implements the Agent Skills standard can load this directory directly. After cloning, the directory contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
 
@@ -121,18 +121,24 @@ Any runtime that implements the Agent Skills standard can load this directory di
 
 ## Supported Runtimes
 
-|| Agent | Install | Behavior | Notes ||
-|-------|-------|----------|----------|-------|
-| **skills.sh (universal)** | ✅ Verified | ✅ Verified | `npx skills add blakee-marcus/tailwindcss-skill` — installs to `~/.agents/skills/tailwind-css`, symlinks to all supported agents |
-| **Claude Code** | ✅ Verified | ✅ Verified | Personal (`~/.claude/skills/tailwind-css`), project (`.claude/skills/tailwind-css`), or plugin (`.claude-plugin/`) |
-| **Hermes Agent** | ✅ Verified | ✅ Verified | `~/.hermes/skills/software-development/tailwind-css` |
-| **Codex** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path; first-class skills support in Codex app |
-| **Cursor** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
-| **Windsurf** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
-| **GitHub Copilot** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
-| **Gemini CLI** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
-| **OpenCode** | ✅ Verified | ⏳ Pending | Installed via skills.sh universal path |
-| **Generic Agent Skills** | ✅ Verified | ⏳ Pending | Any Agent Skills–compatible runtime can load the directory directly |
+The recommended distribution path is:
+
+```bash
+npx skills add blakee-marcus/tailwindcss-skill
+```
+
+That install path has been exercised. Runtime-specific behavior is only marked verified where it has actually been tested.
+
+| Runtime        | Install path                        | Verified |
+| -------------- | ----------------------------------- | -------- |
+| Hermes Agent   | Manual clone                        | ✅        |
+| Claude Code    | skills.sh, manual clone, or plugin  | Not yet  |
+| Codex          | skills.sh                           | Not yet  |
+| Cursor         | skills.sh                           | Not yet  |
+| Windsurf       | skills.sh                           | Not yet  |
+| GitHub Copilot | skills.sh                           | Not yet  |
+| Gemini CLI     | skills.sh                           | Not yet  |
+| OpenCode       | skills.sh                           | Not yet  |
 
 ## Usage
 
