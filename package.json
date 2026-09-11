@@ -1,0 +1,9 @@
+{
+  "name": "tailwindcss-benchmarks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "benchmark": "node benchmarks/scoring.js"
+  }
+}
