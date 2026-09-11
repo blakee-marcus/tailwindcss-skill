@@ -1,0 +1,96 @@
+{
+  "results": [
+    {
+      "fixture": "01-v4-dark-mode",
+      "condition": "dry-run",
+      "fixtureExists": true,
+      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/01-v4-dark-mode",
+      "prompt": "Add class-based dark mode support to the project.",
+      "checks": [
+        "build",
+        "no_v3_config",
+        "expected_css_generated",
+        "integration_preserved"
+      ],
+      "expected_css": [
+        ".dark .dark\\\\:bg-",
+        ".dark\\\\:text-"
+      ],
+      "passed": null,
+      "note": "dry run — agent execution not simulated"
+    },
+    {
+      "fixture": "02-dynamic-classes",
+      "condition": "dry-run",
+      "fixtureExists": true,
+      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/02-dynamic-classes",
+      "prompt": "Fix the component so all Tailwind styles are reliably generated. Currently using dynamic string interpolation for class names.",
+      "checks": [
+        "build",
+        "no_dynamic_classes",
+        "expected_css_generated"
+      ],
+      "expected_css": [
+        ".bg-blue-600",
+        ".bg-red-600",
+        ".bg-green-600"
+      ],
+      "passed": null,
+      "note": "dry run — agent execution not simulated"
+    },
+    {
+      "fixture": "03-preserve-vite-integration",
+      "condition": "dry-run",
+      "fixtureExists": true,
+      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/03-preserve-vite-integration",
+      "prompt": "Add a Tailwind utility class to the project (e.g. bg-blue-500 to the container).",
+      "checks": [
+        "build",
+        "no_v3_config",
+        "integration_preserved"
+      ],
+      "expected_css": [
+        ".bg-blue-500"
+      ],
+      "passed": null,
+      "note": "dry run — agent execution not simulated"
+    },
+    {
+      "fixture": "04-v4-postcss",
+      "condition": "dry-run",
+      "fixtureExists": true,
+      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/04-v4-postcss",
+      "prompt": "Configure Tailwind for this PostCSS project so the utility class bg-green-500 is available.",
+      "checks": [
+        "build",
+        "correct_v4_package",
+        "no_v3_config",
+        "expected_css_generated"
+      ],
+      "expected_css": [
+        ".bg-green-500"
+      ],
+      "passed": null,
+      "note": "dry run — agent execution not simulated"
+    },
+    {
+      "fixture": "05-source-detection",
+      "condition": "dry-run",
+      "fixtureExists": true,
+      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/05-source-detection",
+      "prompt": "The utility class text-emerald-600 is not being generated. Fix the missing Tailwind styles without duplicating the classes into application source.",
+      "checks": [
+        "build",
+        "no_v3_config",
+        "expected_css_generated",
+        "source_detected"
+      ],
+      "expected_css": [
+        ".text-emerald-600"
+      ],
+      "passed": null,
+      "note": "dry run — agent execution not simulated"
+    }
+  ],
+  "timestamp": "2026-09-11T20:27:56.151Z"
+}
