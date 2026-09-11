@@ -24,14 +24,14 @@ A Vite project already running Tailwind v4. The prompt: *"Add dark mode support.
 **Without the skill**, the agent falls back to v3 memory:
 
 ```js
-// tailwind.config.js — silently ignored in v4
+// tailwind.config.js — not loaded automatically in v4
 export default {
   darkMode: 'class',
   content: ['./src/**/*.{html,js,jsx}'],
 }
 ```
 
-That can leave you with missing styles or configuration that looks valid but never affects the generated CSS. No error. No dark mode.
+Unless the project explicitly loads that file with `@config`, those settings never take effect. No error. No dark mode.
 
 **With the skill**, the agent detects v4 + Vite, preserves the existing build setup, and writes CSS-first configuration:
 
@@ -48,7 +48,7 @@ Markup uses `dark:bg-gray-900`. Build passes. Generated CSS contains the variant
 
 | Failure mode | The rule |
 |---|---|
-| Mixing v3/v4 config | Don't add `content: []`, `@tailwind` directives, or `tailwind.config.js` to a v4 project unless migration is the explicit task. |
+| Mixing v3/v4 config | Don't introduce v3-style `content: []` or `@tailwind` directives into a v4 project, and don't assume a JavaScript config file is loaded automatically. |
 | Replacing a working integration | Don't swap `@tailwindcss/vite` or `@tailwindcss/postcss` for the CLI just because the CLI is available. |
 | Dynamic class construction | Flag `bg-${color}-600` — Tailwind scans source as plain text and never sees the complete token. |
 | Arbitrary values over theme tokens | Don't reach for `bg-[#bada55]` when the project already defines `--color-brand`. |
