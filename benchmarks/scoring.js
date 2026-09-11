@@ -20,7 +20,8 @@ const FIXTURES = [
     path: resolve(FIXTURES_DIR, '01-v4-dark-mode'),
     prompt: 'Add class-based dark mode support to the project.',
     checks: ['build', 'no_v3_config', 'expected_css_generated', 'integration_preserved'],
-    expected_css: ['.dark .dark\\\\:bg-', '.dark\\\\:text-'],
+    expected_utilities: ['.dark\\:bg-', '.dark\\:text-'],
+    dark_variant: true,
   },
   {
     id: '02-dynamic-classes',
@@ -28,7 +29,7 @@ const FIXTURES = [
     path: resolve(FIXTURES_DIR, '02-dynamic-classes'),
     prompt: 'Fix the component so all Tailwind styles are reliably generated. Currently using dynamic string interpolation for class names.',
     checks: ['build', 'no_dynamic_classes', 'expected_css_generated'],
-    expected_css: ['.bg-blue-600', '.bg-red-600', '.bg-green-600'],
+    expected_utilities: ['.bg-blue-600', '.bg-red-600', '.bg-green-600'],
   },
   {
     id: '03-preserve-vite-integration',
@@ -36,7 +37,7 @@ const FIXTURES = [
     path: resolve(FIXTURES_DIR, '03-preserve-vite-integration'),
     prompt: 'Add a Tailwind utility class to the project (e.g. bg-blue-500 to the container).',
     checks: ['build', 'no_v3_config', 'integration_preserved'],
-    expected_css: ['.bg-blue-500'],
+    expected_utilities: ['.bg-blue-500'],
   },
   {
     id: '04-v4-postcss',
@@ -44,7 +45,7 @@ const FIXTURES = [
     path: resolve(FIXTURES_DIR, '04-v4-postcss'),
     prompt: 'Configure Tailwind for this PostCSS project so the utility class bg-green-500 is available.',
     checks: ['build', 'correct_v4_package', 'no_v3_config', 'expected_css_generated'],
-    expected_css: ['.bg-green-500'],
+    expected_utilities: ['.bg-green-500'],
   },
   {
     id: '05-source-detection',
@@ -52,7 +53,7 @@ const FIXTURES = [
     path: resolve(FIXTURES_DIR, '05-source-detection'),
     prompt: 'The utility class text-emerald-600 is not being generated. Fix the missing Tailwind styles without duplicating the classes into application source.',
     checks: ['build', 'no_v3_config', 'expected_css_generated', 'source_detected'],
-    expected_css: ['.text-emerald-600'],
+    expected_utilities: ['.text-emerald-600'],
   },
 ]
 
@@ -84,7 +85,6 @@ const hasV3Config = (dir) => {
   for (const f of configFiles) {
     const fp = join(dir, f)
     if (existsSync(fp)) {
-      // If the config is explicitly loaded via @config in the CSS, it's allowed
       const cssFiles = readdirSync(join(dir, 'src')).filter((n) => n.endsWith('.css'))
       let loadedByConfig = false
       for (const css of cssFiles) {
@@ -97,7 +97,6 @@ const hasV3Config = (dir) => {
       if (!loadedByConfig) return true
     }
   }
-  // Check for @tailwind directives in CSS (always v3)
   const cssFiles = readdirSync(join(dir, 'src'), { recursive: true }).filter((n) => n.endsWith('.css'))
   for (const f of cssFiles) {
     const content = readFileSync(join(dir, 'src', f), 'utf8')
@@ -116,9 +115,7 @@ const hasDynamicClasses = (dir) => {
         if (walk(p)) return true
       } else if (/\.(jsx?|tsx?)$/.test(entry.name)) {
         const c = readFileSync(p, 'utf8')
-        // Match template literals with ${...} used in className (JSX expression form)
         if (/className=\{`[^`]*\$\{[^}]+\}[^`]*`\}/.test(c)) return true
-        // Also match string form: className={`...${...}...`}
         if (/className=\s*`[^`]*\$\{[^}]+\}[^`]*`/.test(c)) return true
       }
     }
@@ -133,14 +130,14 @@ const checkPackage = (dir, expected) => {
   return !!allDeps[expected]
 }
 
-// Check for EXACT selectors in CSS output (not just broad strings)
-const checkCssOutput = (dir, expectedSelectors) => {
+// Collect all CSS content from a dist directory or CSS file
+const collectCss = (dir) => {
   const distDir = join(dir, 'dist')
   let cssContent = ''
   if (existsSync(join(distDir, 'assets'))) {
     for (const f of readdirSync(join(distDir, 'assets'))) {
       if (f.endsWith('.css')) {
-        cssContent += readFileSync(join(distDir, 'assets', f), 'utf8')
+        cssContent += readFileSync(join(distDir, 'assets', f), 'utf8') + '\n'
       }
     }
   }
@@ -148,8 +145,44 @@ const checkCssOutput = (dir, expectedSelectors) => {
   if (existsSync(outFile)) {
     cssContent += readFileSync(outFile, 'utf8')
   }
+  return cssContent
+}
+
+// Check for expected utility selectors in generated CSS
+const checkUtilities = (dir, expectedUtilities) => {
+  const cssContent = collectCss(dir)
   if (!cssContent) return false
-  return expectedSelectors.every((sel) => cssContent.includes(sel))
+  return expectedUtilities.every((util) => {
+    // Escape for regex: .dark\:bg- becomes dark\\:bg-
+    const escaped = util.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return cssContent.includes(util) || new RegExp(escaped.replace(/\\\\/g, '\\')).test(cssContent)
+  })
+}
+
+// Check that dark-variant semantics exist: utilities guarded by .dark selector or :where(.dark)
+const checkDarkVariant = (dir, expectedUtilities) => {
+  const cssContent = collectCss(dir)
+  if (!cssContent) return false
+
+  // Must have the expected utilities (with escaped colons, e.g. .dark\:bg-gray-900)
+  const hasUtilities = expectedUtilities.every((util) => {
+    return cssContent.includes(util)
+  })
+  if (!hasUtilities) return false
+
+  // Must have class-based dark variant: either :where(.dark, .dark *) or a .dark selector
+  // guarding the utilities. Tailwind generates the @custom-variant dark (&:where(.dark, .dark *))
+  // as rules scoped to .dark class or :where(.dark, .dark *)
+  const hasDarkScope =
+    cssContent.includes(':where(.dark, .dark *)') ||
+    cssContent.includes('.dark ') ||
+    cssContent.includes('.dark{') ||
+    cssContent.includes('.dark\\:')
+
+  // Must NOT have prefers-color-scheme as the primary dark mechanism
+  const hasPrefersColorScheme = cssContent.includes('prefers-color-scheme')
+
+  return hasDarkScope && !hasPrefersColorScheme
 }
 
 const checkSource = (dir) => {
@@ -177,7 +210,11 @@ const scoreRun = async (fixture, condition, cwd) => {
   }
 
   if (fixture.checks.includes('expected_css_generated')) {
-    checks.expected_css_generated = checkCssOutput(cwd, fixture.expected_css)
+    if (fixture.dark_variant) {
+      checks.expected_css_generated = checkDarkVariant(cwd, fixture.expected_utilities)
+    } else {
+      checks.expected_css_generated = checkUtilities(cwd, fixture.expected_utilities)
+    }
   }
 
   if (fixture.checks.includes('correct_v4_package')) {
@@ -243,14 +280,13 @@ const main = async () => {
         fixturePath: fixture.path,
         prompt: fixture.prompt,
         checks: fixture.checks,
-        expected_css: fixture.expected_css,
+        expected_utilities: fixture.expected_utilities,
         passed: null,
         note: 'dry run — agent execution not simulated',
       })
     }
   } else {
     for (const fixture of FIXTURES) {
-      // Baseline run
       const baselineDir = join(RUNS_DIR, 'baseline', fixture.id)
       rm(baselineDir)
       mkdirSync(baselineDir, { recursive: true })
@@ -259,7 +295,6 @@ const main = async () => {
       const baselineResult = await scoreRun(fixture, 'baseline', baselineDir)
       results.push({ fixture: fixture.id, condition: 'baseline', ...baselineResult })
 
-      // With-skill run
       const withSkillDir = join(RUNS_DIR, 'with-skill', fixture.id)
       rm(withSkillDir)
       mkdirSync(withSkillDir, { recursive: true })

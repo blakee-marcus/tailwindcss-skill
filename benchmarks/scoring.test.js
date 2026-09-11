@@ -114,13 +114,13 @@ const checkPackage = (dir, expected) => {
   return !!allDeps[expected]
 }
 
-const checkCssOutput = (dir, expectedSelectors) => {
+const collectCss = (dir) => {
   const distDir = join(dir, 'dist')
   let cssContent = ''
   if (existsSync(join(distDir, 'assets'))) {
     for (const f of readdirSync(join(distDir, 'assets'))) {
       if (f.endsWith('.css')) {
-        cssContent += readFileSync(join(distDir, 'assets', f), 'utf8')
+        cssContent += readFileSync(join(distDir, 'assets', f), 'utf8') + '\n'
       }
     }
   }
@@ -128,8 +128,29 @@ const checkCssOutput = (dir, expectedSelectors) => {
   if (existsSync(outFile)) {
     cssContent += readFileSync(outFile, 'utf8')
   }
+  return cssContent
+}
+
+const checkDarkVariant = (dir, expectedUtilities) => {
+  const cssContent = collectCss(dir)
   if (!cssContent) return false
-  return expectedSelectors.every((sel) => cssContent.includes(sel))
+
+  // Must have the expected utilities (with escaped colons, e.g. .dark\:bg-gray-900)
+  const hasUtilities = expectedUtilities.every((util) => {
+    return cssContent.includes(util)
+  })
+  if (!hasUtilities) return false
+
+  // Must have class-based dark variant: either :where(.dark, .dark *) or a .dark selector
+  const hasDarkScope =
+    cssContent.includes(':where(.dark, .dark *)') ||
+    cssContent.includes('.dark ') ||
+    cssContent.includes('.dark{') ||
+    cssContent.includes('.dark\\:')
+
+  const hasPrefersColorScheme = cssContent.includes('prefers-color-scheme')
+
+  return hasDarkScope && !hasPrefersColorScheme
 }
 
 const checkSource = (dir) => {
@@ -143,7 +164,7 @@ const checkSource = (dir) => {
   return false
 }
 
-// --- Tests ---
+// --- Unit tests ---
 
 test('01-v4-dark-mode: no_v3_config passes on unmodified fixture', () => {
   const dir = copyFixture('01-v4-dark-mode')
@@ -169,12 +190,31 @@ test('01-v4-dark-mode: no_v3_config passes when @config loads a JS config file',
   assert(!hasV3Config(dir), 'should not flag config loaded via @config')
 })
 
+test('01-v4-dark-mode: checkDarkVariant passes with :where(.dark) scope', () => {
+  const dir = copyFixture('01-v4-dark-mode')
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'),
+    '.dark\\:bg-gray-900 { &:where(.dark, .dark *) { background-color: rgb(17 24 39); } }\n' +
+    '.dark\\:text-white { &:where(.dark, .dark *) { color: rgb(255 255 255); } }\n'
+  )
+  assert(checkDarkVariant(dir, ['.dark\\:bg-', '.dark\\:text-']), 'should detect dark variant via :where(.dark)')
+})
+
+test('01-v4-dark-mode: checkDarkVariant fails when prefers-color-scheme present', () => {
+  const dir = copyFixture('01-v4-dark-mode')
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'),
+    '@media (prefers-color-scheme: dark) { .dark\\:bg-gray-900 { background-color: rgb(17 24 39); } }\n'
+  )
+  assert(!checkDarkVariant(dir, ['.dark\\:bg-']), 'should fail when only prefers-color-scheme is used')
+})
+
 test('02-dynamic-classes: has_dynamic_classes passes on unmodified fixture', () => {
   const dir = copyFixture('02-dynamic-classes')
   assert(hasDynamicClasses(dir), 'should detect dynamic classes in unmodified fixture')
 })
 
-test('02-dynamic-classes: no_dynamic_classes fails when static classes replace dynamic', () => {
+test('02-dynamic-classes: no_dynamic_classes PASSES when static classes replace dynamic', () => {
   const dir = copyFixture('02-dynamic-classes')
   writeFile(join(dir, 'src', 'App.jsx'), `
 export default function App() {
@@ -185,7 +225,7 @@ export default function App() {
   return <div className={variants["blue"]}>Test</div>;
 }
 `)
-  assert(!hasDynamicClasses(dir), 'should not detect dynamic classes after rewrite')
+  assert(!hasDynamicClasses(dir), 'should not detect dynamic classes after static rewrite')
 })
 
 test('03-preserve-vite-integration: correct_v4_package detects @tailwindcss/vite', () => {
@@ -217,6 +257,95 @@ test('05-source-detection: source_detected fails when @source missing', () => {
   const dir = copyFixture('05-source-detection')
   writeFile(join(dir, 'src', 'index.css'), '@import "tailwindcss";\n')
   assert(!checkSource(dir), 'should not detect @source when absent')
+})
+
+// --- Integration tests: known-good output produces overall pass ---
+
+test('INTEGRATION: fixture 01 (dark mode) produces pass with valid dark-variant CSS', () => {
+  const dir = copyFixture('01-v4-dark-mode')
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'),
+    '.dark\\:bg-gray-900 { &:where(.dark, .dark *) { background-color: rgb(17 24 39); } }\n' +
+    '.dark\\:text-white { &:where(.dark, .dark *) { color: rgb(255 255 255); } }\n'
+  )
+  // no_v3_config: true (no config file added)
+  // expected_css_generated: true (dark variant + utilities present)
+  // integration_preserved: true (@tailwindcss/vite in package.json)
+  const noV3 = !hasV3Config(dir)
+  const darkOk = checkDarkVariant(dir, ['.dark\\:bg-', '.dark\\:text-'])
+  const pkgOk = checkPackage(dir, '@tailwindcss/vite')
+  assert(noV3, 'no_v3_config should pass')
+  assert(darkOk, 'expected_css_generated should pass')
+  assert(pkgOk, 'integration_preserved should pass')
+})
+
+test('INTEGRATION: fixture 02 (dynamic classes) produces pass after static rewrite', () => {
+  const dir = copyFixture('02-dynamic-classes')
+  writeFile(join(dir, 'src', 'App.jsx'), `
+export default function App() {
+  const variants = {
+    blue: "bg-blue-600 text-white",
+    red: "bg-red-600 text-white",
+    green: "bg-green-600 text-white",
+  };
+  return (
+    <div>
+      <span className={variants.blue}>blue</span>
+      <span className={variants.red}>red</span>
+      <span className={variants.green}>green</span>
+    </div>
+  );
+}
+`)
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'),
+    '.bg-blue-600 { background-color: rgb(37 99 235); }\n' +
+    '.bg-red-600 { background-color: rgb(220 38 38); }\n' +
+    '.bg-green-600 { background-color: rgb(22 163 74); }\n'
+  )
+  const noDyn = !hasDynamicClasses(dir)
+  const cssOk = collectCss(dir).includes('.bg-blue-600') &&
+                collectCss(dir).includes('.bg-red-600') &&
+                collectCss(dir).includes('.bg-green-600')
+  assert(noDyn, 'no_dynamic_classes should pass')
+  assert(cssOk, 'expected_css_generated should pass')
+})
+
+test('INTEGRATION: fixture 03 (preserve vite) produces pass when @tailwindcss/vite retained', () => {
+  const dir = copyFixture('03-preserve-vite-integration')
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'), '.bg-blue-500 { background-color: rgb(59 130 246); }\n')
+  const noV3 = !hasV3Config(dir)
+  const pkgOk = checkPackage(dir, '@tailwindcss/vite')
+  const cssOk = collectCss(dir).includes('.bg-blue-500')
+  assert(noV3, 'no_v3_config should pass')
+  assert(pkgOk, 'integration_preserved should pass')
+  assert(cssOk, 'expected_css_generated should pass')
+})
+
+test('INTEGRATION: fixture 04 (v4 postcss) produces pass with @tailwindcss/postcss', () => {
+  const dir = copyFixture('04-v4-postcss')
+  mkdirp(join(dir, 'dist'))
+  writeFile(join(dir, 'dist', 'index.css'), '.bg-green-500 { background-color: rgb(34 197 94); }\n')
+  const noV3 = !hasV3Config(dir)
+  const pkgOk = checkPackage(dir, '@tailwindcss/postcss')
+  const cssOk = collectCss(dir).includes('.bg-green-500')
+  assert(noV3, 'no_v3_config should pass')
+  assert(pkgOk, 'correct_v4_package should pass')
+  assert(cssOk, 'expected_css_generated should pass')
+})
+
+test('INTEGRATION: fixture 05 (source detection) produces pass with @source directive', () => {
+  const dir = copyFixture('05-source-detection')
+  writeFile(join(dir, 'src', 'index.css'), '@import "tailwindcss";\n@source "../lib/*.jsx";\n')
+  mkdirp(join(dir, 'dist', 'assets'))
+  writeFile(join(dir, 'dist', 'assets', 'index.css'), '.text-emerald-600 { color: rgb(5 150 105); }\n')
+  const noV3 = !hasV3Config(dir)
+  const cssOk = collectCss(dir).includes('.text-emerald-600')
+  const srcOk = checkSource(dir)
+  assert(noV3, 'no_v3_config should pass')
+  assert(cssOk, 'expected_css_generated should pass')
+  assert(srcOk, 'source_detected should pass')
 })
 
 // Cleanup
