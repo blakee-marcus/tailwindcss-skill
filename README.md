@@ -6,24 +6,56 @@
   <img src="https://skills.sh/b/blakee-marcus/tailwindcss-skill" alt="skills.sh installs">
   <img src="https://img.shields.io/badge/version-0.1.0-blue" alt="Version 0.1.0">
   <img src="https://img.shields.io/github/license/blakee-marcus/tailwindcss-skill" alt="MIT License">
-  <img src="https://img.shields.io/badge/source-official_Tailwind_docs-0ea5e9" alt="Official Tailwind docs">
 </p>
 
-An open Agent Skill for Tailwind CSS v4 — version-aware implementation, migration, debugging, and verification. The skill follows the [Agent Skills](https://agentskills.io/specification) standard and is known to install into the runtimes listed below.
+**Stop coding agents from writing Tailwind v3 code in your Tailwind v4 projects.**
 
-## Why this exists
+AI agents mix Tailwind versions. They add `content: []`, `@tailwind` directives, and `tailwind.config.js` to v4 projects that don't use them. The result is silent breakage — missing styles, wrong configuration, and builds that pass without emitting the utilities you asked for.
 
-The skill interrupts specific failure modes that `SKILL.md` treats as rules:
+This skill reads the project's actual Tailwind version and build pipeline before changing anything, then verifies the emitted CSS.
 
-- **Mixing v3 and v4 configuration.** Adding `content: []` or `@tailwind` directives to a v4 project, or assuming `tailwind.config.js` is required when it isn't.
-- **Replacing a working integration.** Swapping an existing `@tailwindcss/vite` or `@tailwindcss/postcss` setup for the CLI just because the CLI is available.
-- **Constructing class names Tailwind cannot discover.** Writing `bg-${color}-600` produces no styles, because Tailwind scans source as plain text and never sees the complete token.
-- **Introducing arbitrary values when theme tokens exist.** Reaching for `bg-[#bada55]` when the project already defines `--color-brand` and should extend it instead.
-- **Claiming success without verifying emitted CSS.** Reporting a change as done without running the build and confirming the utility is present in the output.
+```bash
+npx skills add blakee-marcus/tailwindcss-skill
+```
+
+## Proof
+
+A Vite project already running Tailwind v4. The prompt: *"Add dark mode support."*
+
+**Without the skill**, the agent falls back to v3 memory:
+
+```js
+// tailwind.config.js — v3 pattern, silently ignored in v4
+export default {
+  darkMode: 'class',
+  content: ['./src/**/*.{html,js,jsx}'],
+}
+```
+
+The file does nothing in v4. No error. No dark mode.
+
+**With the skill**, the agent detects v4 + Vite, preserves the existing architecture, and writes CSS-first configuration:
+
+```css
+/* src/index.css */
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Markup uses `dark:bg-gray-900`. Build passes. Emitted CSS contains the variant.
+
+## What it prevents
+
+| Failure mode | The rule |
+|---|---|
+| Mixing v3/v4 config | Never add `content: []`, `@tailwind` directives, or `tailwind.config.js` to a v4 project unless migration is the explicit task. |
+| Replacing a working integration | Don't swap `@tailwindcss/vite` or `@tailwindcss/postcss` for the CLI just because the CLI is available. |
+| Dynamic class construction | Flag `bg-${color}-600` — Tailwind scans source as plain text and never sees the complete token. |
+| Arbitrary values over theme tokens | Don't reach for `bg-[#bada55]` when the project already defines `--color-brand`. |
+| Unverified changes | Always run the build and confirm the target utility is present in emitted CSS. |
 
 ## How it works
-
-The agent follows a fixed workflow defined in `SKILL.md`:
 
 1. **Detect** — read `package.json`, lockfile, `vite.config.*`, `postcss.config.*`, CSS entrypoints, and the installed Tailwind version before touching anything.
 2. **Classify** — pin version (v3 vs v4), pipeline (Vite / PostCSS / CLI / none), and task type (new / existing / migration / debug).
@@ -31,175 +63,76 @@ The agent follows a fixed workflow defined in `SKILL.md`:
 4. **Protect v4 semantics** — avoid v3-era constructs unless intentionally migrating.
 5. **Verify** — run the build, confirm it exits 0, and verify the target utility is present in the emitted CSS.
 
-## Example
-
-A repository that already uses Tailwind v4 with a Vite integration.
-
-**Without the skill**, an agent may apply remembered v3 patterns:
-
-```js
-// tailwind.config.js — v3 pattern, not used in v4
-export default {
-  content: ["./src/**/*.{html,js,jsx}"],
-}
-```
-
-**With the skill**, the agent first detects the installed version and existing build integration. For a v4 project it preserves CSS-first configuration and only introduces explicit source registration (`@source`) when the project's actual source layout requires it — for example, a vendored UI library inside `node_modules` that Tailwind ignores by default.
-
-## Coverage
-
-Every area below is sourced from official Tailwind documentation and compiled into `references/`.
-
-| Area | Status | Source |
-|------|--------|--------|
-| Compatibility / browser support | Ingested | https://tailwindcss.com/docs/compatibility |
-| v3 → v4 migration | Ingested | https://tailwindcss.com/docs/upgrade-guide |
-| Utility-first styling | Ingested | https://tailwindcss.com/docs/styling-with-utility-classes |
-| Variants & states | Ingested | https://tailwindcss.com/docs/hover-focus-and-other-states |
-| Responsive design & container queries | Ingested | https://tailwindcss.com/docs/responsive-design |
-| Dark mode (v4 `@custom-variant`) | Ingested | https://tailwindcss.com/docs/dark-mode |
-| Custom styles / directives | Ingested | https://tailwindcss.com/docs/adding-custom-styles |
-| Source detection & class scanning | Ingested | https://tailwindcss.com/docs/detecting-classes-in-source-files |
-| Theme / configuration (`@theme`) | Ingested | https://tailwindcss.com/docs/theme |
-| Colors & opacity | Ingested | https://tailwindcss.com/docs/colors |
-| Installation / build pipelines | Ingested | https://tailwindcss.com/docs/installation/using-vite and related |
-| Functions & directives | Ingested | https://tailwindcss.com/docs/functions-and-directives |
-
-Status "Ingested" means the canonical page was read in full and its operational knowledge was merged into the appropriate reference file.
-
 ## Installation
-
-The repository root **is** the skill. There is no nested `tailwind-css/` folder inside the repository. It follows the [Agent Skills](https://agentskills.io/specification) open standard, so the same directory installs into any compatible runtime.
-
-### Recommended distribution command
 
 ```bash
 npx skills add blakee-marcus/tailwindcss-skill
 ```
 
-This path has been exercised with the skills.sh installer.
-
-<details>
-<summary>Manual install per runtime</summary>
-
-**Hermes Agent**
+Manual installs:
 
 ```bash
+# Hermes Agent
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   ~/.hermes/skills/software-development/tailwind-css
-```
 
-**Claude Code — personal**
-
-```bash
+# Claude Code — personal
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   ~/.claude/skills/tailwind-css
-```
 
-The destination directory name `tailwind-css` matches the skill's `name` field.
-
-**Claude Code — project**
-
-```bash
+# Claude Code — project
 git clone git@github.com:blakee-marcus/tailwindcss-skill.git \
   .claude/skills/tailwind-css
-```
 
-**Claude Code — plugin**
-
-The repo ships a `.claude-plugin/plugin.json` manifest, so it also loads as a single-skill plugin without restructuring:
-
-```bash
+# Claude Code — plugin
 claude --plugin-dir /path/to/tailwindcss-skill
 ```
 
-**Other Agent Skills clients**
-
-Any runtime that implements the Agent Skills standard can load this directory directly. After cloning, the directory contains `SKILL.md`, `README.md`, `LICENSE`, and `references/`. No build step or dependencies are required.
-
-</details>
-
 ## Supported Runtimes
 
-The recommended distribution path is:
-
-```bash
-npx skills add blakee-marcus/tailwindcss-skill
-```
-
-That install path has been exercised. Runtime-specific behavior is only marked verified where it has actually been tested.
-
-| Runtime        | Install path                        | Verified |
-| -------------- | ----------------------------------- | -------- |
-| Hermes Agent   | Manual clone                        | ✅        |
-| Claude Code    | skills.sh, manual clone, or plugin  | Not yet  |
-| Codex          | skills.sh                           | Not yet  |
-| Cursor         | skills.sh                           | Not yet  |
-| Windsurf       | skills.sh                           | Not yet  |
-| GitHub Copilot | skills.sh                           | Not yet  |
-| Gemini CLI     | skills.sh                           | Not yet  |
-| OpenCode       | skills.sh                           | Not yet  |
+| Runtime | Install path | Verified |
+|---|---|---|
+| Hermes Agent | Manual clone | ✅ |
+| Claude Code | skills.sh, manual clone, or plugin | Not yet |
+| Codex | skills.sh | Not yet |
+| Cursor | skills.sh | Not yet |
+| Windsurf | skills.sh | Not yet |
+| GitHub Copilot | skills.sh | Not yet |
+| Gemini CLI | skills.sh | Not yet |
+| OpenCode | skills.sh | Not yet |
 
 ## Usage
 
-Load the skill, then ask for any Tailwind task:
-
-- **New project setup** — Vite, PostCSS, CLI, or an existing framework-native integration.
+- **New project** — Vite, PostCSS, CLI, or an existing framework-native integration.
 - **Existing project** — add utilities, theme tokens, dark mode, custom variants, or `@source` registration.
-- **Migration** — v3 → v4, using the `@tailwindcss/upgrade` tool on a fresh branch.
+- **Migration** — v3 → v4 using the `@tailwindcss/upgrade` tool on a fresh branch.
 - **Debugging** — missing styles, broken builds, or class-detection issues.
 - **Review** — flag dynamic class construction and v3-era constructs in PRs or generated code.
 
-## Quick Demo Scenarios
+## Coverage
 
-These are the fastest way to see the skill's value. Each is a one-prompt task that would silently fail without the skill's rules.
+Every area is sourced from official Tailwind documentation and compiled into `references/`. "Ingested" means the canonical page was read in full and its operational knowledge was merged into the appropriate reference file.
 
-### 1. v3→v4 Mistake Prevention
-> "Add dark mode to this Tailwind v4 project."
-
-**Without skill:** Agent adds `darkMode: 'class'` to `tailwind.config.js` (v3 pattern) — does nothing in v4, no error.
-**With skill:** Agent detects v4, sees no `tailwind.config.js` is required, and adds the correct v4 CSS-first variant:
-```css
-@custom-variant dark (&:where(.dark, .dark *));
-```
-Then uses `dark:bg-gray-900` in markup.
-
-### 2. Dynamic-Class Detection
-> "Create a Button component that takes a `color` prop and styles itself."
-
-**Without skill:** Generates `className={`bg-${color}-600 hover:bg-${color}-500`}` — Tailwind never sees complete tokens, styles vanish silently.
-**With skill:** Flags the pattern, rewrites to a static map:
-```jsx
-const variants = {
-  blue: "bg-blue-600 hover:bg-blue-500 text-white",
-  red: "bg-red-500 hover:bg-red-400 text-white",
-};
-return <button className={variants[color]} />;
-```
-
-### 3. Preserving Vite/PostCSS Architecture
-> "Set up Tailwind in this Vite project."
-
-**Without skill:** Installs `tailwindcss` + `autoprefixer`, adds PostCSS config with `tailwindcss` plugin — v3 pattern, wrong for v4, breaks the existing Vite integration.
-**With skill:** Detects Vite project, installs `tailwindcss @tailwindcss/vite`, adds plugin to `vite.config.js`, uses `@import "tailwindcss"` in CSS. Architecture preserved.
+| Area | Source |
+|---|---|
+| Compatibility / browser support | [tailwindcss.com/docs/compatibility](https://tailwindcss.com/docs/compatibility) |
+| v3 → v4 migration | [tailwindcss.com/docs/upgrade-guide](https://tailwindcss.com/docs/upgrade-guide) |
+| Utility-first styling | [tailwindcss.com/docs/styling-with-utility-classes](https://tailwindcss.com/docs/styling-with-utility-classes) |
+| Variants & states | [tailwindcss.com/docs/hover-focus-and-other-states](https://tailwindcss.com/docs/hover-focus-and-other-states) |
+| Responsive design & container queries | [tailwindcss.com/docs/responsive-design](https://tailwindcss.com/docs/responsive-design) |
+| Dark mode (v4 `@custom-variant`) | [tailwindcss.com/docs/dark-mode](https://tailwindcss.com/docs/dark-mode) |
+| Custom styles / directives | [tailwindcss.com/docs/adding-custom-styles](https://tailwindcss.com/docs/adding-custom-styles) |
+| Source detection & class scanning | [tailwindcss.com/docs/detecting-classes-in-source-files](https://tailwindcss.com/docs/detecting-classes-in-source-files) |
+| Theme / configuration (`@theme`) | [tailwindcss.com/docs/theme](https://tailwindcss.com/docs/theme) |
+| Colors & opacity | [tailwindcss.com/docs/colors](https://tailwindcss.com/docs/colors) |
+| Installation / build pipelines | [tailwindcss.com/docs/installation/using-vite](https://tailwindcss.com/docs/installation/using-vite) and related |
+| Functions & directives | [tailwindcss.com/docs/functions-and-directives](https://tailwindcss.com/docs/functions-and-directives) |
 
 ## Repository structure
 
 - **`SKILL.md`** — operational behavior: when to use the skill, the detect→verify workflow, authority order, and failure-mode rules.
 - **`references/*.md`** — durable technical knowledge: directive syntax, theme namespaces, variant behavior, source detection, migration steps. Each topic has one canonical owner file.
-- **`references/docs-index.md`** — source provenance and the ownership map: which Tailwind URL was ingested, what it covers, and which local file holds it.
-
-`references/v4-core-reference.md` is a quick index — concise syntax that points to the canonical owner for depth.
-
-## Documentation ingestion model
-
-New Tailwind pages are added through a controlled contract:
-
-- **Single-page boundary.** One documentation page is ingested at a time. Only claims the page itself supports are extracted; external links are treated as references, not ingestion sources.
-- **Merge, not append.** New information is consolidated into existing sections. The skill does not grow by stacking duplicate prose.
-- **Canonical local ownership.** Each concept has exactly one owner file. Other files summarize or cross-link; none duplicate the full explanation.
-- **Provenance.** Every reference file records the source URL behind implementation-sensitive facts (directive syntax, browser requirements, renamed utilities).
-- **Conflict handling.** If a new page contradicts existing content, both sides and their source URLs are noted. Resolution follows authority order: installed version, live build, then newer official docs — never silent overwrite.
+- **`references/docs-index.md`** — source provenance and ownership map: which Tailwind URL was ingested, what it covers, and which local file holds it.
 
 ## Contributing
 
