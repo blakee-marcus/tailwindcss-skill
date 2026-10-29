@@ -122,6 +122,12 @@ def prepare(case, destination, with_skill=False):
     return before
 
 
+def preserves_color_labels(app):
+    """Accept color names in JS string arrays/maps or directly rendered JSX text."""
+    return all(bool(re.search(r"(?<![\w-])(?:['\"]" + color + r"['\"]|>\s*" + color + r"\s*<)", app))
+               for color in ("blue", "red", "green"))
+
+
 def score(case, workspace, before, evidence):
     # Every evaluation rebuilds in a fresh workspace; stale artifacts never count.
     build = run_command(["npm", "run", "build"], workspace, evidence / "build.json")
@@ -148,7 +154,7 @@ def score(case, workspace, before, evidence):
     if number == "02":
         app = (workspace / "src/App.jsx").read_text()
         checks["no_dynamic_bg_construction"] = not re.search(r"bg-\$\{", app)
-        checks["three_colors_preserved"] = all(re.search(r"['\"]" + c + r"['\"]", app) for c in ("blue", "red", "green"))
+        checks["three_colors_preserved"] = preserves_color_labels(app)
     if number == "05":
         entry = (workspace / "src/index.css").read_text()
         checks["vendor_registered_without_safelist"] = bool(re.search(r"@source\s+['\"][^'\"]*vendor", entry)) and "text-emerald-600" not in entry
