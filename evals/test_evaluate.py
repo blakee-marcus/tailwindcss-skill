@@ -44,6 +44,53 @@ class CssEvidenceTests(unittest.TestCase):
         self.assertTrue(actual[1]["media_dark"])
 
 
+    def test_negated_dark_scope_does_not_count(self):
+        rules = self.parse(r'.dark\:bg-gray-900 { &:not(.dark *) { background-color: black } }')
+        matches = [r for r in rules if 'dark:bg-gray-900' in r["classes"] and r["declarations"]]
+        self.assertTrue(matches)
+        self.assertFalse(any(r["class_dark"] for r in matches))
+
+    def test_has_dark_descendant_does_not_count_as_dark_ancestor(self):
+        rules = self.parse(r'.dark\:bg-gray-900:has(.dark *) { background-color: black }')
+        self.assertFalse(rules[0]["class_dark"])
+
+    def test_selector_list_does_not_merge_unrelated_scopes(self):
+        rules = self.parse(r'.dark\:bg-gray-900, .dark .other { background-color: black }')
+        utility = [r for r in rules if 'dark:bg-gray-900' in r["classes"]]
+        self.assertEqual(len(utility), 1)
+        self.assertFalse(utility[0]["class_dark"])
+        self.assertTrue(next(r for r in rules if "other" in r["classes"])["class_dark"])
+
+    def test_positive_ancestor_and_child_scope_are_accepted(self):
+        rules = self.parse(r'.dark .dark\:bg-gray-900, .dark > .other { background-color: black }')
+        self.assertTrue(all(r["class_dark"] for r in rules))
+
+    def test_sibling_dark_does_not_count_as_ancestor(self):
+        rules = self.parse(r'.dark + .dark\:bg-gray-900 { background-color: black }')
+        self.assertFalse(rules[0]["class_dark"])
+
+
+class ColorLabelTests(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("evaluate", RUNNER)
+        evaluator = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(evaluator)
+        self.preserved = evaluator.preserves_color_labels
+
+    def test_quoted_color_array_is_accepted(self):
+        self.assertTrue(self.preserved("const colors = ['blue', 'red', 'green']"))
+
+    def test_static_jsx_text_is_accepted(self):
+        self.assertTrue(self.preserved(
+            '<span className="bg-blue-600">blue</span>'
+            '<span className="bg-red-600">red</span>'
+            '<span className="bg-green-600">green</span>'))
+
+    def test_missing_color_label_is_rejected(self):
+        self.assertFalse(self.preserved(
+            '<span>blue</span><span>red</span><span>purple</span>'))
+
+
 class ProposalTests(unittest.TestCase):
     def setUp(self):
         spec = importlib.util.spec_from_file_location("evaluate", RUNNER)
