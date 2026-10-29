@@ -1,0 +1,3 @@
+Add class-based dark mode: the page background should use dark:bg-gray-900 and its heading dark:text-white when a parent has class dark. Preserve light styles and the build integration.
+
+Read the current project. If .agents/skills/tailwind-css/SKILL.md exists, read and follow that local skill and its references; otherwise solve normally. Do not install skills, inspect credentials, access external services, change configuration outside this workspace, or modify files. Return only JSON with a files array of complete replacement file contents; the evaluator will apply and build it. Do not run a dev server. Allowed replacement paths: src/App.jsx, src/index.css

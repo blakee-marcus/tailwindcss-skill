@@ -1,0 +1,15 @@
+{
+  "name": "tailwindcss-benchmark-04",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "postcss src/index.css --output dist/index.css"
+  },
+  "devDependencies": {
+    "postcss": "8.5.32",
+    "postcss-cli": "11.0.1",
+    "@tailwindcss/postcss": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}
