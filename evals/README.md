@@ -4,6 +4,10 @@ This harness separates **evaluator validation** from **agent comparison**. A cor
 
 Current evidence: [recorded results](../benchmarks/results/summary.md).
 
+## CI and measured-agent separation
+
+Pull requests and pushes to main run evaluator regression tests and six paired fixture controls in `.github/workflows/benchmark-validation.yml`. These are real CSS builds, **not** model results. Authenticated Codex comparisons must be run explicitly and their outputs reviewed before publishing any effectiveness claim.
+
 ## Requirements and commands
 
 Python 3.11+, Node/npm, and the pinned root dependencies:
