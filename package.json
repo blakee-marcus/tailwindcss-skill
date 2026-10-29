@@ -4,6 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "benchmark": "node benchmarks/scoring.js"
+    "benchmark": "python3 evals/evaluate.py",
+    "test": "python3 -m unittest discover -s evals -v",
+    "benchmark:controls": "python3 evals/evaluate.py --controls",
+    "benchmark:agents": "python3 evals/evaluate.py --agents codex"
+  },
+  "devDependencies": {
+    "postcss": "8.5.32",
+    "postcss-selector-parser": "7.1.0"
   }
 }

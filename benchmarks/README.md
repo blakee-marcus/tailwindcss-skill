@@ -1,75 +1,30 @@
-# Benchmarks
+# Tailwind evaluation fixtures
 
-Reproducible evidence that the `tailwindcss-skill` improves Tailwind v4 agent behavior.
+The runner and methodology live in [`../evals/`](../evals/README.md). This directory contains six locked fixtures and the recorded summary—not evidence of a skill uplift yet.
 
-This directory holds the benchmark fixtures, scorer, and raw results. Everything here is inspectable — runs and results are committed so third parties can verify the evidence directly.
-
-## Layout
-
-```
-benchmarks/
-├── README.md           # this file
-├── scoring.js          # deterministic scorer + self-tests
-├── scoring.test.js     # test runner for scoring functions
-├── fixtures/           # 5 Tailwind v4 scenarios
-│   ├── 01-v4-dark-mode/
-│   ├── 02-dynamic-classes/
-│   ├── 03-preserve-vite-integration/
-│   ├── 04-v4-postcss/
-│   └── 05-source-detection/
-├── prompts/            # exact prompts given to the agent
-├── runs/               # raw agent output (baseline + with-skill)
-│   ├── baseline/
-│   └── with-skill/
-└── results/            # structured results and summary
-    ├── results.json
-    └── summary.md
+```sh
+npm ci --ignore-scripts
+npm test
+npm run benchmark                         # unmeasured plan; no inference or file writes
+npm run benchmark:controls                # real builds: untouched fixture vs manual gold
+npm run benchmark:agents                  # real Codex invocation; authentication required
 ```
 
-## How to run
+`node benchmarks/scoring.js` forwards to the evaluator. Its legacy `--execute` flag forwards to `--agents codex`; it no longer scores unchanged copies as if an agent ran. `node benchmarks/scoring.test.js` runs the actual evaluator test suite, not duplicated helper implementations.
 
-```bash
-node benchmarks/scoring.js                  # dry-run validation
-node benchmarks.scoring.test.js             # scorer self-tests
-node benchmarks/scoring.js --execute        # run actual benchmark (requires agent runtime)
-```
+## Six cases
 
-## Scoring criteria
-
-Each run produces pass/fail on seven check types. A fixture passes only when **all** its checks pass.
-
-| Check | What it verifies | How |
+| Fixture | Starting condition | Required result |
 |---|---|---|
-| `build` | Project builds and exits 0 | `npm run build` in the fixture directory |
-| `no_v3_config` | No v3 constructs that aren't explicitly loaded via `@config` | Detects `tailwind.config.*` files, `@tailwind` base/components/utilities directives, and `content: []` in CSS — ignores a config file that is explicitly loaded via `@config` |
-| `expected_css_generated` | Target utility/variant selector is present in emitted CSS | Searches `dist/assets/*.css` or `dist/index.css` for exact selectors |
-| `integration_preserved` | Existing `@tailwindcss/vite` not replaced | Checks `package.json` devDependencies |
-| `no_dynamic_classes` | No string-interpolated classNames | Recursively scans `src/` for `${...}` inside className attributes |
-| `correct_v4_package` | Uses `@tailwindcss/vite` or `@tailwindcss/postcss` | Checks `package.json` for the correct v4 package |
-| `source_detected` | `@source` directive used when needed | Scans `src/*.css` for `@source` |
+| `01-v4-dark-mode` | v4 Vite project with light styles | Class-scoped dark background and text, not media-only dark mode |
+| `02-dynamic-classes` | Interpolated `bg-${color}-600` | All three complete color classes emitted, labels/layout retained |
+| `03-preserve-vite-integration` | Working v4 Vite integration | Blue background without changing packages, Vite config, or scripts |
+| `04-v4-postcss` | v4 packages with the old PostCSS plugin name | Correct v4 plugin, emitted green background, original PostCSS command |
+| `05-source-detection` | Imported vendor component outside explicit source roots | Register vendor source, no copied class token or safelist |
+| `06-v3-stable` | Working v3 PostCSS/Vite project | Blue background while preserving v3, directives, config, and lockfile |
 
-## Per-fixture check matrix
+The authoritative task prompts and acceptance checks are in `evals/evaluate.py`. Exact trial prompts are saved outside the fixture as `prompt.txt`; the older `prompts/` files are historical, not inputs to the current runner.
 
-| Fixture | build | no_v3_config | expected_css | integration_preserved | no_dynamic | correct_v4 | source_detected |
-|---|---|---|---|---|---|---|---|
-| 01-v4-dark-mode | ✓ | ✓ | ✓ (`.dark .dark\\:bg-`) | ✓ | | | |
-| 02-dynamic-classes | ✓ | | ✓ (`.bg-blue-600`) | | ✓ | | |
-| 03-preserve-vite | ✓ | ✓ | | ✓ | | | |
-| 04-v4-postcss | ✓ | ✓ | ✓ (`.bg-green-500`) | | | ✓ (`@tailwindcss/postcss`) | |
-| 05-source-detection | ✓ | ✓ | ✓ (`.text-emerald-600`) | | | | ✓ |
+## Recorded state
 
-## Self-tests
-
-`scoring.test.js` proves each check function:
-- **Passes** the unmodified fixture (valid input)
-- **Fails** a targeted mutation (invalid input)
-
-Run with `node benchmarks/scoring.test.js`. All tests must pass before the scorer is used for benchmark execution.
-
-## Results
-
-After running the benchmark suite:
-
-- `benchmarks/results/results.json` — structured per-run results
-- `benchmarks/results/summary.md` — human-readable summary
-- `benchmarks/runs/baseline/` and `benchmarks/runs/with-skill/` — raw agent output and build artifacts
+See [`results/summary.md`](results/summary.md) and [`results/results.json`](results/results.json). Manual gold builds test the evaluator. They are **not** with-skill agent outcomes. Authentication errors and unattempted trials are **not** coding failures or measured comparisons.

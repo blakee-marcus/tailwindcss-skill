@@ -1,96 +1,510 @@
 {
-  "results": [
-    {
-      "fixture": "01-v4-dark-mode",
-      "condition": "dry-run",
-      "fixtureExists": true,
-      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/01-v4-dark-mode",
-      "prompt": "Add class-based dark mode support to the project.",
-      "checks": [
-        "build",
-        "no_v3_config",
-        "expected_css_generated",
-        "integration_preserved"
-      ],
-      "expected_css": [
-        ".dark .dark\\\\:bg-",
-        ".dark\\\\:text-"
-      ],
-      "passed": null,
-      "note": "dry run — agent execution not simulated"
+  "status": "agent_comparison_blocked",
+  "completed_agent_pairs": 0,
+  "requested_agent_pairs": 6,
+  "controls": {
+    "mode": "controls",
+    "completed_agent_pairs": 0,
+    "validated_control_pairs": 6,
+    "requested_cases": 6,
+    "runs": [
+      {
+        "fixture": "01-v4-dark-mode",
+        "condition": "negative-control",
+        "fixture_hash": "254c528b0ab416954866ca57c37a886434bca58851179ffef9b0d1a105100df8",
+        "prompt_hash": "63c788dacec9b9575adf89aa826e0c09ed5cbf2f4f5f9634a58a72a8b4481fec",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:dark:bg-gray-900": false,
+          "css:dark:text-white": false,
+          "css:min-h-screen": true,
+          "css:text-3xl": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-35g3jjg7.css": "dece169a1902b50c0325e38eb0e396ec3e21a74c59aafbd18d26be05f24e7bb3"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/01-v4-dark-mode/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/01-v4-dark-mode/negative-control"
+      },
+      {
+        "fixture": "01-v4-dark-mode",
+        "condition": "manual-gold",
+        "fixture_hash": "254c528b0ab416954866ca57c37a886434bca58851179ffef9b0d1a105100df8",
+        "prompt_hash": "63c788dacec9b9575adf89aa826e0c09ed5cbf2f4f5f9634a58a72a8b4481fec",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:dark:bg-gray-900": true,
+          "css:dark:text-white": true,
+          "css:min-h-screen": true,
+          "css:text-3xl": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-CSjHiyaf.css": "3ab38adc3928178ce1063b06b279cb772641a749faadfc30bc76f4a7304ccb82"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/01-v4-dark-mode/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/01-v4-dark-mode/manual-gold"
+      },
+      {
+        "fixture": "02-dynamic-classes",
+        "condition": "negative-control",
+        "fixture_hash": "ff57ae277734c382f0123735daf33f20cf2e1387ec9a404919a3b661164d5d71",
+        "prompt_hash": "64dfa3adf832f9e0879f7bd35bb5b5f62f7831be39efbc0296674cc0af7b643c",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-600": false,
+          "css:bg-red-600": false,
+          "css:bg-green-600": false,
+          "css:p-8": true,
+          "css:text-2xl": true,
+          "no_dynamic_bg_construction": false,
+          "three_colors_preserved": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-DO0f1vN0.css": "016f378a7c7bf3cc41e0844292c3374b68294f5f7d3d9d393ada82b7dc7da955"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/02-dynamic-classes/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/02-dynamic-classes/negative-control"
+      },
+      {
+        "fixture": "02-dynamic-classes",
+        "condition": "manual-gold",
+        "fixture_hash": "ff57ae277734c382f0123735daf33f20cf2e1387ec9a404919a3b661164d5d71",
+        "prompt_hash": "64dfa3adf832f9e0879f7bd35bb5b5f62f7831be39efbc0296674cc0af7b643c",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-600": true,
+          "css:bg-red-600": true,
+          "css:bg-green-600": true,
+          "css:p-8": true,
+          "css:text-2xl": true,
+          "no_dynamic_bg_construction": true,
+          "three_colors_preserved": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-HTcjjlXn.css": "517fe71c0372c8d716b797db892c90987fa2bc17ef1f01abcb51993086d40c18"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/02-dynamic-classes/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/02-dynamic-classes/manual-gold"
+      },
+      {
+        "fixture": "03-preserve-vite-integration",
+        "condition": "negative-control",
+        "fixture_hash": "6a56c0c08e3b924bd053fd08d2571202cb16e53c15b4effcfe4b7c9ed482f9b3",
+        "prompt_hash": "c9b248bdcc0a1d89363310d5e5c110f5f82c5d64a4496a2b8955227210d2fe31",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-500": false,
+          "css:min-h-screen": true,
+          "css:text-3xl": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-Cf1QuJ8Z.css": "0a824bfa6713281de78ef2ed91a74947f8661136858a332e3ce28ea9dc01d062"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/03-preserve-vite-integration/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/03-preserve-vite-integration/negative-control"
+      },
+      {
+        "fixture": "03-preserve-vite-integration",
+        "condition": "manual-gold",
+        "fixture_hash": "6a56c0c08e3b924bd053fd08d2571202cb16e53c15b4effcfe4b7c9ed482f9b3",
+        "prompt_hash": "c9b248bdcc0a1d89363310d5e5c110f5f82c5d64a4496a2b8955227210d2fe31",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-500": true,
+          "css:min-h-screen": true,
+          "css:text-3xl": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-BnN9zioP.css": "d4a38a9e04ca88b6b0d48f341d572c994ae6a87126d981e470ca9e62c79f8a2d"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/03-preserve-vite-integration/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/03-preserve-vite-integration/manual-gold"
+      },
+      {
+        "fixture": "04-v4-postcss",
+        "condition": "negative-control",
+        "fixture_hash": "9bd3fea0ca669ba6953629353360b67f09dad2254be2104e331537c754c791e8",
+        "prompt_hash": "a07834207c5b087d03cb278eeed2b4c2dfcc8c665df351d33e0c412a5353ff1d",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": false,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-green-500": false,
+          "css:min-h-screen": false,
+          "css:text-3xl": false
+        },
+        "build_exit": 1,
+        "artifacts": {},
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/04-v4-postcss/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/04-v4-postcss/negative-control"
+      },
+      {
+        "fixture": "04-v4-postcss",
+        "condition": "manual-gold",
+        "fixture_hash": "9bd3fea0ca669ba6953629353360b67f09dad2254be2104e331537c754c791e8",
+        "prompt_hash": "a07834207c5b087d03cb278eeed2b4c2dfcc8c665df351d33e0c412a5353ff1d",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-green-500": true,
+          "css:min-h-screen": true,
+          "css:text-3xl": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/index.css": "eaa816774d8f86a77dc3d5063b0fef387045ecc49eb841a496b6f8627921508a"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/04-v4-postcss/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/04-v4-postcss/manual-gold"
+      },
+      {
+        "fixture": "05-source-detection",
+        "condition": "negative-control",
+        "fixture_hash": "c24496822874fc71ebbb20ce33847be7ccee325b1de8f9fd6cd3700870cf271c",
+        "prompt_hash": "5d01b8b0caeafe6484bc1a3d13b27b06a52c0514cabe8e16a52050bd58837269",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:text-emerald-600": false,
+          "css:min-h-screen": true,
+          "css:text-3xl": false,
+          "vendor_registered_without_safelist": false
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-DpvQ_c4X.css": "f56655e4bfa4c2fbcdf32cc5e5cf8e7678e07d21271c27549ab623919fbe8e89"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/05-source-detection/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/05-source-detection/negative-control"
+      },
+      {
+        "fixture": "05-source-detection",
+        "condition": "manual-gold",
+        "fixture_hash": "c24496822874fc71ebbb20ce33847be7ccee325b1de8f9fd6cd3700870cf271c",
+        "prompt_hash": "5d01b8b0caeafe6484bc1a3d13b27b06a52c0514cabe8e16a52050bd58837269",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:text-emerald-600": true,
+          "css:min-h-screen": true,
+          "css:text-3xl": true,
+          "vendor_registered_without_safelist": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-I6PsjNkr.css": "098cd95c3ccead0bf9f4d2a11ada859c67a4f5e90933aa07a0951ac301d72af6"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/05-source-detection/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/05-source-detection/manual-gold"
+      },
+      {
+        "fixture": "06-v3-stable",
+        "condition": "negative-control",
+        "fixture_hash": "1fd942e664966c79e37ae2d8eb8a4a5feb1c3b48f175c06434bc5114935bd2c6",
+        "prompt_hash": "5db2ff1c8dd12759891ede9dd73fd0c0aaa4413af4f289f2eb6d08f70a6079ec",
+        "status": "failed",
+        "passed": false,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-500": false,
+          "css:min-h-screen": true,
+          "css:text-3xl": true,
+          "v3_preserved": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-D7qBx6SG.css": "7c5c2159bdea4cf07b3fffbf43055390fd91f3b00c5051a3f939d3bd4eabb0b4"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/06-v3-stable/negative-control/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/06-v3-stable/negative-control"
+      },
+      {
+        "fixture": "06-v3-stable",
+        "condition": "manual-gold",
+        "fixture_hash": "1fd942e664966c79e37ae2d8eb8a4a5feb1c3b48f175c06434bc5114935bd2c6",
+        "prompt_hash": "5db2ff1c8dd12759891ede9dd73fd0c0aaa4413af4f289f2eb6d08f70a6079ec",
+        "status": "passed",
+        "passed": true,
+        "checks": {
+          "build": true,
+          "css_parsed": true,
+          "architecture_preserved": true,
+          "css:bg-blue-500": true,
+          "css:min-h-screen": true,
+          "css:text-3xl": true,
+          "v3_preserved": true
+        },
+        "build_exit": 0,
+        "artifacts": {
+          "dist/assets/index-CA2q-NIb.css": "d7c93ff030b46ffba657231a99a1b3f284d7092be1ccae8ecd3b35fddb329bb1"
+        },
+        "css_parser_exit": 0,
+        "local_workspace": "<CONTROLS_RUN>/06-v3-stable/manual-gold/workspace",
+        "retained_evidence": "benchmarks/results/evidence/controls/06-v3-stable/manual-gold"
+      }
+    ],
+    "timestamp": "2026-10-29T00:46:37.704044+00:00",
+    "output": "<CONTROLS_RUN>",
+    "node": "v26.7.0",
+    "npm": "11.19.0"
+  },
+  "agent_trial": {
+    "mode": "agents",
+    "runtime": "codex",
+    "runtime_version": "codex-cli 0.136.0",
+    "model_configured": "gpt-5.5",
+    "model_actual": null,
+    "completed_agent_pairs": 0,
+    "requested_cases": 6,
+    "skill_manifest": {
+      "SKILL.md": "cdeba2e8c59a188871bd04c755821bc5f6a06de518a55b3e5c08b8e6c014c348",
+      "references/agent-skills-compliance.md": "da1bee5fd0b97c3263b424668daeed82cbce9f4f1d1c8cf30874260134f0bb75",
+      "references/colors.md": "d1b8857e40517c5fcb168471a4cfe4e3f28c9c210b71961302912d8419b49dc1",
+      "references/compatibility-and-browser-support.md": "a8ceb4c8d467350c48a9873d2e4096f46b2c0e28c8850a9b503a0bd1febb7c82",
+      "references/dark-mode.md": "d88980058a00f0ef3baa9a87a3c5375f92b49b17795b3584e9f52acb1e97f2f4",
+      "references/directives-and-functions.md": "2af98904c0b66ea6c3523c297c86e50943766e1af11ba7b40ad6f1b3cf8f12b6",
+      "references/docs-index.md": "af08a310baee1bd473066ab9fa11c0c2b0fc23d1ac6a3ecdd684a435e1103385",
+      "references/installation-and-build.md": "3f6ed18f086ad10827fcea7b4f6f6abb0cfeaf9c3bab1e0db81e1001152ee618",
+      "references/migration-v3-v4.md": "537ba6bee24b7b904e5d181ae724dc7fd081c991634536ed7b251d959a5773b3",
+      "references/preflight.md": "dccd84c898ce631e393b4241bbf4411b84c527d7e6cf611d2f13db657b951348",
+      "references/responsive-design.md": "26b98e08b1c9157791ce87687584c3dc125114be75290d73b498fbd97acb039a",
+      "references/skill-editing-hazards.md": "ccc3c343798dc058e560ec5fb0e3e6bb5ed6bda4d07c77a06f5fe4cefc07f606",
+      "references/source-detection.md": "ef810acae14608517d1f030cfd535b3999eb2a13cf7ecba47254819a62260f42",
+      "references/theme-and-configuration.md": "3fc2f2259fd4510ae7e78cf97c006f1c0eb3b0d1d77ffd26dda821cb5d63731b",
+      "references/utilities-and-values.md": "4073df289eaf431c57489d150e79007126ed08ccb76f2bed04656d2640bd2e50",
+      "references/v4-core-reference.md": "203afef4766ca1de540d73a2c37931ba0ba284294d5fcc0b8bd06870ceee1a7f",
+      "references/variants-and-states.md": "2382d62380cbbfa03d5ae2293da9fdf3b0dd4557d85be86120a11040ad15443b"
     },
-    {
-      "fixture": "02-dynamic-classes",
-      "condition": "dry-run",
-      "fixtureExists": true,
-      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/02-dynamic-classes",
-      "prompt": "Fix the component so all Tailwind styles are reliably generated. Currently using dynamic string interpolation for class names.",
-      "checks": [
-        "build",
-        "no_dynamic_classes",
-        "expected_css_generated"
-      ],
-      "expected_css": [
-        ".bg-blue-600",
-        ".bg-red-600",
-        ".bg-green-600"
-      ],
-      "passed": null,
-      "note": "dry run — agent execution not simulated"
-    },
-    {
-      "fixture": "03-preserve-vite-integration",
-      "condition": "dry-run",
-      "fixtureExists": true,
-      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/03-preserve-vite-integration",
-      "prompt": "Add a Tailwind utility class to the project (e.g. bg-blue-500 to the container).",
-      "checks": [
-        "build",
-        "no_v3_config",
-        "integration_preserved"
-      ],
-      "expected_css": [
-        ".bg-blue-500"
-      ],
-      "passed": null,
-      "note": "dry run — agent execution not simulated"
-    },
-    {
-      "fixture": "04-v4-postcss",
-      "condition": "dry-run",
-      "fixtureExists": true,
-      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/04-v4-postcss",
-      "prompt": "Configure Tailwind for this PostCSS project so the utility class bg-green-500 is available.",
-      "checks": [
-        "build",
-        "correct_v4_package",
-        "no_v3_config",
-        "expected_css_generated"
-      ],
-      "expected_css": [
-        ".bg-green-500"
-      ],
-      "passed": null,
-      "note": "dry run — agent execution not simulated"
-    },
-    {
-      "fixture": "05-source-detection",
-      "condition": "dry-run",
-      "fixtureExists": true,
-      "fixturePath": "/Users/blakemarcus/Desktop/projects/tailwindcss-skill/benchmarks/fixtures/05-source-detection",
-      "prompt": "The utility class text-emerald-600 is not being generated. Fix the missing Tailwind styles without duplicating the classes into application source.",
-      "checks": [
-        "build",
-        "no_v3_config",
-        "expected_css_generated",
-        "source_detected"
-      ],
-      "expected_css": [
-        ".text-emerald-600"
-      ],
-      "passed": null,
-      "note": "dry run — agent execution not simulated"
-    }
-  ],
-  "timestamp": "2026-09-11T20:27:56.151Z"
+    "runs": [
+      {
+        "fixture": "01-v4-dark-mode",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "5626dd275eee012989e51b353f40b38294fb99fb1242b9346437346f12f664d4",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "fixture_hash": "254c528b0ab416954866ca57c37a886434bca58851179ffef9b0d1a105100df8",
+        "agent_exit": 1,
+        "status": "blocked",
+        "reason": "Codex authentication failed; sign-in is required",
+        "local_workspace": "<AGENT_RUN>/01-v4-dark-mode/without-skill/workspace",
+        "retained_evidence": "benchmarks/results/evidence/agents/01-v4-dark-mode/without-skill"
+      },
+      {
+        "fixture": "01-v4-dark-mode",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "5626dd275eee012989e51b353f40b38294fb99fb1242b9346437346f12f664d4",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "02-dynamic-classes",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "7b753cc0667b3224112c0cec94b998260f577a6162594d58471ce68d971d8ed7",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "02-dynamic-classes",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "7b753cc0667b3224112c0cec94b998260f577a6162594d58471ce68d971d8ed7",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "03-preserve-vite-integration",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "bf5a8341b3b1b19d40cf11c7af8650debc7f0df86817402da987569286769356",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "03-preserve-vite-integration",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "bf5a8341b3b1b19d40cf11c7af8650debc7f0df86817402da987569286769356",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "04-v4-postcss",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "ec71ee4a5f2d654cd4da2d22a503ff2c376868783255a7d01d078343ff9e0cf4",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "04-v4-postcss",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "ec71ee4a5f2d654cd4da2d22a503ff2c376868783255a7d01d078343ff9e0cf4",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "05-source-detection",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "19e04c0afaeb45c7f224ec6ecf1ba771e3446175db851abe527286b297903dd7",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "05-source-detection",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "19e04c0afaeb45c7f224ec6ecf1ba771e3446175db851abe527286b297903dd7",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "06-v3-stable",
+        "condition": "without-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "b770a7c63487e8ed0ba802934e2ae289f6774129e9545b9157078330f13b4365",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": null,
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      },
+      {
+        "fixture": "06-v3-stable",
+        "condition": "with-skill",
+        "agent_completed": false,
+        "passed": null,
+        "prompt_hash": "b770a7c63487e8ed0ba802934e2ae289f6774129e9545b9157078330f13b4365",
+        "model_configured": "gpt-5.5",
+        "model_actual": null,
+        "skill_hash": "76ab58426401feb617b95d0813df7344f380bfe422d5b2deacf86f6721141531",
+        "status": "not_attempted",
+        "reason": "Codex authentication failed; sign-in is required"
+      }
+    ],
+    "limitations": [
+      "Existing user Codex configuration, personal skills and MCP catalog are inherited identically; not clean-room isolation.",
+      "Skill is delivered as a native project directory. Successful skill loading/use must be confirmed from command traces before attributing an outcome.",
+      "Read-only proposal task with independently applied file replacements, not an unrestricted autonomous editing task.",
+      "Build/CSS/preservation checks do not establish full browser accessibility or interactive correctness.",
+      "One trial per condition is a pilot, not statistical evidence of improvement."
+    ],
+    "timestamp": "2026-10-29T00:38:39.167443+00:00",
+    "output": "<AGENT_RUN>",
+    "node": "v26.7.0",
+    "npm": "11.19.0"
+  },
+  "claude_status": {
+    "command": [
+      "claude",
+      "auth",
+      "status"
+    ],
+    "exit": 1,
+    "logged_in": false,
+    "version": "2.1.162 (Claude Code)"
+  },
+  "harness_hashes": {
+    "evals/evaluate.py": "2d6349a2dbebed2f66a1ca584ea5aa469f1f6bd03cee282ee516ea803f8ef5b0",
+    "evals/css-evidence.mjs": "54cd22e294619f6d4818e5750acee5a0b056e691a0b0465738d086e14506f33c",
+    "evals/gold.json": "e7635ea2ae2e8914d4ada569d0622590ee9245537da4fdc9340e1cb2d0f03d50"
+  },
+  "interpretation": "Manual control outcomes validate fixtures and checks, not agent efficacy. No with/without skill uplift has been measured."
 }

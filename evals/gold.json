@@ -1,0 +1,58 @@
+{
+  "01-v4-dark-mode": {
+    "files": [
+      {
+        "path": "src/index.css",
+        "content": "@import \"tailwindcss\" source(none);\n@source \"./\";\n@source \"../index.html\";\n@custom-variant dark (&:where(.dark, .dark *));\n"
+      },
+      {
+        "path": "src/App.jsx",
+        "content": "export default function App() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-white dark:bg-gray-900\">\n      <h1 className=\"text-3xl font-bold text-gray-900 dark:text-white\">\n        Benchmark: v4 Dark Mode\n      </h1>\n    </div>\n  )\n}\n"
+      }
+    ]
+  },
+  "02-dynamic-classes": {
+    "files": [
+      {
+        "path": "src/App.jsx",
+        "content": "export default function App() {\n  const colors = ['blue', 'red', 'green']\n  const backgrounds = { blue: 'bg-blue-600', red: 'bg-red-600', green: 'bg-green-600' }\n\n  return (\n    <div className=\"p-8 space-y-4\">\n      <h1 className=\"text-2xl font-bold\">Dynamic Class Bug</h1>\n      <div className=\"flex gap-4\">\n        {colors.map((color) => (\n          <span\n            key={color}\n            className={`${backgrounds[color]} text-white px-4 py-2 rounded`}\n          >\n            {color}\n          </span>\n        ))}\n      </div>\n    </div>\n  )\n}\n"
+      }
+    ]
+  },
+  "03-preserve-vite-integration": {
+    "files": [
+      {
+        "path": "src/App.jsx",
+        "content": "export default function App() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-blue-500\">\n      <h1 className=\"text-3xl font-bold text-gray-900\">\n        Benchmark: Preserve Vite Integration\n      </h1>\n    </div>\n  )\n}\n"
+      }
+    ]
+  },
+  "04-v4-postcss": {
+    "files": [
+      {
+        "path": "postcss.config.js",
+        "content": "export default {\n  plugins: {\n    '@tailwindcss/postcss': {},\n  },\n}\n"
+      },
+      {
+        "path": "index.html",
+        "content": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Benchmark 04 \u2014 v4 PostCSS</title>\n  </head>\n  <body>\n    <div class=\"flex items-center justify-center min-h-screen bg-green-500\">\n      <h1 class=\"text-3xl font-bold text-gray-900\">\n        Benchmark: v4 PostCSS Setup\n      </h1>\n    </div>\n  </body>\n</html>\n"
+      }
+    ]
+  },
+  "05-source-detection": {
+    "files": [
+      {
+        "path": "src/index.css",
+        "content": "@import \"tailwindcss\" source(none);\n@source \"./\";\n@source \"../index.html\";\n@source \"../vendor\";\n"
+      }
+    ]
+  },
+  "06-v3-stable": {
+    "files": [
+      {
+        "path": "src/App.jsx",
+        "content": "export default function App() {\n  return (\n    <div className=\"min-h-screen flex items-center justify-center bg-blue-500\">\n      <h1 className=\"text-3xl font-bold text-gray-900\">\n        Benchmark 06 \u2014 v3 Stable Project\n      </h1>\n    </div>\n  )\n}"
+      }
+    ]
+  }
+}

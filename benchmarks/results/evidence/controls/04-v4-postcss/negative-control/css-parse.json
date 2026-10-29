@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "<REPO_ROOT>/evals/css-evidence.mjs"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "stdout": "[]\n",
+  "stderr": "",
+  "seconds": 0.038
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "stdout": "\n> tailwindcss-benchmark-05@1.0.0 build\n> vite build\n\nvite v6.4.5 building for production...\ntransforming...\n\u2713 27 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.42 kB \u2502 gzip:  0.29 kB\ndist/assets/index-DpvQ_c4X.css    4.34 kB \u2502 gzip:  1.47 kB\ndist/assets/index-BWhQOAis.js   143.79 kB \u2502 gzip: 46.18 kB\n\u2713 built in 228ms\n",
+  "stderr": "",
+  "seconds": 1.865
+}

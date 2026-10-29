@@ -1,0 +1,14 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "stdout": "\nadded 79 packages in 414ms\n",
+  "stderr": "",
+  "seconds": 0.46
+}

@@ -152,7 +152,7 @@ Load the skill, then ask for any Tailwind task:
 
 ## Quick Demo Scenarios
 
-These are the fastest way to see the skill's value. Each is a one-prompt task that would silently fail without the skill's rules.
+These examples illustrate known Tailwind failure modes and the skill's intended guidance. They are not measured agent outcomes. See [evaluation evidence](benchmarks/results/summary.md) for the actual validation state.
 
 ### 1. v3→v4 Mistake Prevention
 > "Add dark mode to this Tailwind v4 project."
@@ -182,6 +182,10 @@ return <button className={variants[color]} />;
 
 **Without skill:** Installs `tailwindcss` + `autoprefixer`, adds PostCSS config with `tailwindcss` plugin — v3 pattern, wrong for v4, breaks the existing Vite integration.
 **With skill:** Detects Vite project, installs `tailwindcss @tailwindcss/vite`, adds plugin to `vite.config.js`, uses `@import "tailwindcss"` in CSS. Architecture preserved.
+
+## Evaluation
+
+The [six-case evaluator](evals/README.md) exercises real locked Tailwind builds and checks emitted CSS plus architecture preservation. Manual positive/negative controls have been validated; a with/without-skill uplift has **not** been measured. The current Codex trial is authentication-blocked, and Claude Code behavioral validation remains unverified. See the [recorded results](benchmarks/results/summary.md).
 
 ## Repository structure
 
